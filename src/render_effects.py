@@ -17,13 +17,14 @@
 """
 from __future__ import annotations
 
-import io
 import subprocess
 import sys
 from pathlib import Path
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+# 本文件既是脚本也被 make_mixed.py 当模块 import, 所以绝不碰 sys.stdout。
+# 两层 io.TextIOWrapper 套同一个 buffer, 先被 GC 的那层会把 buffer 关掉,
+# 结果一 print 就 ValueError: I/O operation on closed file。
+# 中文输出统一靠环境变量 PYTHONIOENCODING=utf-8。
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from effects import EFFECTS, DESC, LEAD_IN, LEAD_OUT, Ctx  # noqa: E402

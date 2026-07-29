@@ -107,9 +107,11 @@ def main():
 
     OUT.mkdir(parents=True, exist_ok=True)
     mv = find_mv()
-    ass = SUBS / f"soramimi_{which}.ass"
-    if not ass.exists():
-        raise SystemExit(f"ERROR: 缺 {ass}, 先跑 make_ass.py")
+    # 两种字幕来源: 基础配色版 (make_ass.py) 和逐字特效版 (render_effects.py)
+    cands = [SUBS / f"soramimi_{which}.ass", SUBS / "fx" / f"fx_{which}.ass"]
+    ass = next((p for p in cands if p.exists()), None)
+    if ass is None:
+        raise SystemExit(f"ERROR: 找不到字幕, 试过:\n  " + "\n  ".join(str(p) for p in cands))
 
     timed = json.loads((ROOT / "02_lyrics" / "soramimi_timed.json").read_text(encoding="utf-8"))
     lo, hi = timed[0]["start"], timed[-1]["end"]

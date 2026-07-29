@@ -45,7 +45,33 @@ def find_mv():
     return c[0]
 
 
-def burn(mv: Path, ass: Path, out: Path):
+def shift_ass(src: Path, dst: Path, shift_s: float) -> Path:
+    """把 .ass 的所有 Dialogue 时间整体前移 shift_s 秒。
+
+    为什么必须配合 -ss 一起用:
+        -ss 放在 -i 之前时 ffmpeg 会把输出时间戳归零, 而 .ass 里是绝对时间。
+        只裁视频不移字幕, 字幕就会整体晚 shift_s 秒 (本项目 §6.6 踩过)。
+        两边都从 0 开始才对齐。
+    """
+    def sh(stamp: str) -> str:
+        h, mi, s = stamp.strip().split(":")
+        t = max(int(h) * 3600 + int(mi) * 60 + float(s) - shift_s, 0.0)
+        return f"{int(t//3600)}:{int(t%3600//60):02d}:{t%60:05.2f}"
+
+    out_lines = []
+    for ln in src.read_text(encoding="utf-8-sig").splitlines():
+        if ln.startswith("Dialogue:"):
+            head, _, rest = ln.partition(":")
+            # Dialogue 前 9 个字段固定, 第 10 个字段(文本)里可能含逗号, 所以限制切分次数
+            f = rest.split(",", 9)
+            f[1], f[2] = sh(f[1]), sh(f[2])
+            ln = head + ":" + ",".join(f)
+        out_lines.append(ln)
+    dst.write_text("\n".join(out_lines) + "\n", encoding="utf-8-sig")
+    return dst
+
+
+def burn(mv: Path, ass: Path, out: Path, trim: float = 0.0):
     """始终压全片。
 
     为什么取消了"只压一小段"的预览模式:
@@ -54,8 +80,16 @@ def burn(mv: Path, ass: Path, out: Path):
         在预览的 26.69s 处 (= 绝对 50.4s), 差值正好等于 23.7s 的裁剪起点。
         -copyts / -start_at_zero 能修, 但语义微妙容易再踩; 全片编码在 12x 实时下
         只要 ~25 秒, 直接消掉这一整类 bug。要短片段用 cut_clip() 从成品流拷贝。
+
+    trim > 0 是唯一的例外 —— 砍掉 UP 主自制片头。这时必须同步把 .ass 前移相同量
+    (shift_ass), 两边都从 0 起算才对齐。不能用流拷贝砍片头: 本片关键帧只在
+    0 / 5.005 / 10.010 秒 (GOP=5s), 2.85s 处没有关键帧, 流拷贝会吸到 0s (带上整个
+    片头) 或 5.005s (切掉官方标题卡)。也不该去砍已压好的成片 —— 那是二次编码,
+    从原始 MV 重压一次质量更好。
     """
     cmd = [str(FF), "-y", "-loglevel", "warning", "-stats"]
+    if trim > 0:
+        cmd += ["-ss", f"{trim:.3f}"]
     # 不传 fontsdir: filtergraph 里 Windows 盘符的冒号需要多层转义, 实测
     # "fontsdir=C\\:/Windows/Fonts" 会被解析成 "No option name near '/Windows/Fonts'"。
     # libass 在 Windows 上本来就走系统字体查找, 能直接找到 Microsoft YaHei。
@@ -103,7 +137,12 @@ def cut_clip(full: Path, out: Path, start: float, dur: float):
 
 
 def main():
-    which = sys.argv[1] if len(sys.argv) > 1 else "ktv_yellow"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    which = args[0] if args else "ice_rainbow"
+    trim = 0.0
+    for a in sys.argv[1:]:
+        if a.startswith("--trim="):
+            trim = float(a.split("=", 1)[1])
 
     OUT.mkdir(parents=True, exist_ok=True)
     mv = find_mv()
@@ -118,20 +157,21 @@ def main():
     print(f"MV      : {mv.name}")
     print(f"字幕    : {ass.name}  ({len(timed)} 行, {lo:.1f}s - {hi:.1f}s)")
 
-    out = OUT / f"dashanghuahuo_soramimi_{which}.mp4"
-    if not burn(mv, ass, out):
+    suffix = which
+    if trim > 0:
+        ass = shift_ass(ass, ass.parent / f"_shifted_{which}.ass", trim)
+        suffix = f"{which}_notrailer"
+        print(f"片头裁剪: -{trim:.2f}s   字幕已同步前移 -> 第 1 行 {lo-trim:.2f}s")
+
+    out = OUT / f"dashanghuahuo_soramimi_{suffix}.mp4"
+    if not burn(mv, ass, out, trim=trim):
         return 1
     print(f"\n成品: {out.name}  ({out.stat().st_size/1e6:.1f} MB)")
 
-    # 有字幕的那一段单独切一份短片, 方便快速看
-    clip = OUT / f"clip_{which}.mp4"
-    if cut_clip(out, clip, max(lo - 2, 0), hi - lo + 4):
-        print(f"短片: {clip.name}  ({clip.stat().st_size/1e6:.1f} MB)")
-
-    # QC 抽帧: 每行中点各一张 —— 绝对时间, 因为压的是全片
-    times = [round(l["start"] + (l["end"] - l["start"]) / 2, 2) for l in timed]
-    frames = grab_qc(out, times, f"full_{which}")
-    print(f"QC 抽帧: {len(frames)} 张 -> {QC / ('full_' + which)}")
+    # QC 抽帧: 每行中点各一张。裁过片头的话时间要减掉裁剪量
+    times = [round(l["start"] + (l["end"] - l["start"]) / 2 - trim, 2) for l in timed]
+    frames = grab_qc(out, times, f"full_{suffix}")
+    print(f"QC 抽帧: {len(frames)} 张 -> {QC / ('full_' + suffix)}")
     return 0
 
 

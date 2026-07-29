@@ -1,0 +1,31 @@
+﻿[Script Info]
+; 空耳卡拉OK — 打上花火
+; make_ass.py  滚动扫光(\kf) + 配色方案: ice_rainbow
+Title: dashanghuahuo soramimi (ice_rainbow)
+ScriptType: v4.00+
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+PlayResX: 1920
+PlayResY: 1080
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sora,Microsoft YaHei,78,&H00FFFFFF&,&H00FFFFFF&,&H00301808&,&H80000000&,-1,0,0,0,100,100,2,0,1,4.0,2.0,2,60,60,96,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:25.37,0:00:30.45,Sora,,0,0,0,,{\fad(110,110)}{\k35}{\1c&H00FFEBFF&\kf34}好{\1c&H00FFE7F5&\kf24}难{\1c&H00FFE3EB&\kf58}以{\1c&H00FFE0E1&\kf42}灭{\1c&H00FFDCD7&\kf62}我{\1c&H00FFD8CD&\kf26}的{\1c&H00FFD5C3&\kf34}心{\1c&H00FFD1B9&\kf28}头{\1c&H00FFCDAF&\kf40}那{\1c&H00FFCAA5&\kf28}一{\1c&H00FFC69B&\kf30}刹{\1c&H00FFC391&\kf48}啊
+Dialogue: 0,0:00:30.54,0:00:34.93,Sora,,0,0,0,,{\fad(110,110)}{\k18}{\1c&H00FFEBFF&\kf32}盈{\1c&H00FFE4EC&\kf28}满{\1c&H00FFDDDA&\kf52}脉{\1c&H00FFD7C8&\kf12}脉{\1c&H00FFD0B5&\kf94}的{\1c&H00FFC9A3&\kf68}思{\1c&H00FFC391&\kf100}量
+Dialogue: 0,0:00:35.35,0:00:40.43,Sora,,0,0,0,,{\fad(110,110)}{\k35}{\1c&H00FFEBFF&\kf36}似{\1c&H00FFE7F4&\kf28}那{\1c&H00FFE3E9&\kf70}么{\1c&H00FFDFDE&\kf22}怀{\1c&H00FFDBD3&\kf56}念{\1c&H00FFD7C8&\kf40}记{\1c&H00FFD3BD&\kf62}载{\1c&H00FFCFB2&\kf28}太{\1c&H00FFCBA7&\kf34}多{\1c&H00FFC79C&\kf34}过{\1c&H00FFC391&\kf44}往
+Dialogue: 0,0:00:40.52,0:00:44.75,Sora,,0,0,0,,{\fad(110,110)}{\k18}{\1c&H00FFEBFF&\kf42}启{\1c&H00FFE5EF&\kf4}明{\1c&H00FFDFDF&\kf56}流{\1c&H00FFD9CF&\kf90}星{\1c&H00FFD4C0&\kf22}流{\1c&H00FFCEB0&\kf40}逝{\1c&H00FFC8A0&\kf30}了{\1c&H00FFC391&\kf86}它
+Dialogue: 0,0:00:45.37,0:00:49.00,Sora,,0,0,0,,{\fad(110,110)}{\k35}{\1c&H00FFEBFF&\kf36}犹{\1c&H00FFE4EC&\kf28}离{\1c&H00FFDDDA&\kf76}开 {\1c&H00FFD7C8&\kf46}湿{\1c&H00FFD0B5&\kf36}那{\1c&H00FFC9A3&\kf26}面{\1c&H00FFC391&\kf68}框
+Dialogue: 0,0:00:49.05,0:00:51.66,Sora,,0,0,0,,{\fad(110,0)}{\k11}{\1c&H00FFEBFF&\kf26}暗{\1c&H00FFE4EC&\kf38}示{\1c&H00FFDDDA&\kf30}我{\1c&H00FFD7C8&\kf60}都{\1c&H00FFD0B5&\kf34}要{\1c&H00FFC9A3&\kf34}别{\1c&H00FFC391&\kf28}离
+Dialogue: 0,0:00:51.66,0:00:54.69,Sora,,0,0,0,,{\fad(0,110)}{\1c&H00FFEBFF&\kf34}那{\1c&H00FFE4EC&\kf24}夜{\1c&H00FFDDDA&\kf30}海{\1c&H00FFD7C8&\kf34}鸥{\1c&H00FFD0B5&\kf36}洒{\1c&H00FFC9A3&\kf34}凉{\1c&H00FFC391&\kf76}意
+Dialogue: 0,0:00:55.35,0:00:58.92,Sora,,0,0,0,,{\fad(110,110)}{\k35}{\1c&H00FFEBFF&\kf14}犹{\1c&H00FFE4EC&\kf50}如{\1c&H00FFDDDA&\kf96}那{\1c&H00FFD7C8&\kf30}冰{\1c&H00FFD0B5&\kf26}冷{\1c&H00FFC9A3&\kf36}的{\1c&H00FFC391&\kf54}光
+Dialogue: 0,0:00:58.99,0:01:04.42,Sora,,0,0,0,,{\fad(110,110)}{\k15}{\1c&H00FFEBFF&\kf32}已{\1c&H00FFE7F5&\kf34}枯{\1c&H00FFE4EC&\kf28}落{\1c&H00FFE1E3&\kf34}的{\1c&H00FFDDDA&\kf28}疙{\1c&H00FFDAD1&\kf32}瘩{\1c&H00FFD7C8&\kf44}当{\1c&H00FFD3BE&\kf24}年{\1c&H00FFD0B5&\kf58}肆{\1c&H00FFCDAC&\kf32}意{\1c&H00FFC9A3&\kf32}的{\1c&H00FFC69A&\kf32}烟{\1c&H00FFC391&\kf82}花
+Dialogue: 0,0:01:05.38,0:01:08.09,Sora,,0,0,0,,{\fad(110,87)}{\k35}{\1c&H0078B4FF&\kf22}啪！{\1c&H008BBCDA&\kf22}灯{\1c&H009EC5B6&\kf18}火{\1c&H00B1CD91&\kf24}光{\1c&H00C5D66D&\kf10}陡{\1c&H00D8DE48&\kf50}闪{\1c&H00EBE724&\kf28}一{\1c&H00FFF000&\kf54}刹
+Dialogue: 0,0:01:08.14,0:01:10.56,Sora,,0,0,0,,{\fad(87,110)}{\k9}{\1c&H0078B4FF&\kf34}哈！{\1c&H008BBCDA&\kf18}那{\1c&H009EC5B6&\kf12}笔{\1c&H00B1CD91&\kf30}画{\1c&H00C5D66D&\kf32}满{\1c&H00D8DE48&\kf4}天{\1c&H00EBE724&\kf20}一{\1c&H00FFF000&\kf76}方
+Dialogue: 0,0:01:10.61,0:01:15.20,Sora,,0,0,0,,{\fad(110,110)}{\k11}{\1c&H0078B4FF&\kf22}记{\1c&H0085BAE5&\kf6}得{\1c&H0093C0CC&\kf20}我{\1c&H00A0C6B2&\kf74}吗，{\1c&H00AECC99&\kf22}偶{\1c&H00BBD27F&\kf28}然{\1c&H00C9D866&\kf32}浪{\1c&H00D6DE4C&\kf30}漫{\1c&H00E4E432&\kf36}的{\1c&H00F1EA19&\kf26}时{\1c&H00FFF000&\kf116}光？
+Dialogue: 0,0:01:15.40,0:01:18.09,Sora,,0,0,0,,{\fad(110,104)}{\k35}{\1c&H0078B4FF&\kf34}爱{\1c&H008BBCDA&\kf12}埋{\1c&H009EC5B6&\kf16}于{\1c&H00B1CD91&\kf28}那{\1c&H00C5D66D&\kf34}颗{\1c&H00D8DE48&\kf18}颗{\1c&H00EBE724&\kf24}落{\1c&H00FFF000&\kf58}幕
+Dialogue: 0,0:01:18.14,0:01:20.78,Sora,,0,0,0,,{\fad(104,110)}{\k10}{\1c&H0078B4FF&\kf30}打{\1c&H008BBCDA&\kf16}开{\1c&H009EC5B6&\kf18}心{\1c&H00B1CD91&\kf24}铁{\1c&H00C5D66D&\kf36}锁{\1c&H00D8DE48&\kf20}那{\1c&H00EBE724&\kf28}一{\1c&H00FFF000&\kf46}搭

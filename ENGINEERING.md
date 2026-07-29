@@ -261,7 +261,20 @@ class TimedSyllable:
 
 ### 阶段 8 · 字幕生成
 
-基础版 `make_ass.py`，特效版 `render_effects.py`（见 §5）。
+**默认走滚动扫光**（`make_ass.py`）。逐字动画引擎（`effects.py` / `render_effects.py` / `make_mixed.py`）是**可选项**，需要时才用，见 §5。
+
+| 方式 | 一行的 Dialogue 数 | 字会不会离开原位 | 适用 |
+|---|---|---|---|
+| **滚动扫光 `\kf`（默认）** | 1 | 否 | 长时间观看、真正跟唱 |
+| 逐字动画（`render_effects.py`） | 3 × 字数 | 视特效而定 | 短视频、需要强视觉冲击 |
+
+**配色方案如何与滚动扫光共存**：样式里把 `SecondaryColour` 设成白色（未唱），然后在每个字前面内联一个 `\1c` 覆盖 `PrimaryColour`：
+
+```
+{\1c&H00FFC8B4&\kf34}好{\1c&H00FFC0A0&\kf24}难...
+```
+
+于是"彩虹 / 寒冰 / 火焰"这些**逐字渐变配色**在滚动扫光下照样成立 —— 不需要动用逐字动画引擎。这是一个重要区分：**颜色类效果不需要逐字 Dialogue，动画类才需要。**
 
 ASS 卡拉OK的颜色语义**容易搞反**：
 
@@ -461,6 +474,32 @@ Whisper 在纯器乐段会产生**幻觉文本**。强制对齐只好把这些�
 - **现象**：`kex_exchange_identification: read: Software caused connection abort`，全部文件同步失败
 - **根因**：同步脚本对每个文件开 2 条 ssh（推送 + 校验），三十几个文件 = 六十多条连接
 - **修法**：`tar czf - <files> | ssh host "tar xzf - -C <dest>"`，**单条连接**。触发限流后需要冷却，不要快速重试
+
+### 6.13 相邻行字幕重叠
+- **现象**：相邻两句的字幕偶尔同时出现在屏幕上，叠在一起
+- **根因**：整行的提前出现量 / 延后消失量用了**固定值**（各 350–400 ms）。而对齐结果里相邻行的实际间隔差异极大
+- **实测证据**：13 对相邻行里 **8 对间隔 < 0.8 s**，其中 1 对间隔**正好为 0**
+
+  | 间隔 | 对数 |
+  |---|---|
+  | 0.00 s | 1 |
+  | 0.22 – 0.46 s | 7 |
+  | > 0.9 s | 5 |
+
+- **修法**：按邻行的**实际间隔**逐行收缩，不能用固定值
+
+  ```python
+  lead_in  = min(LEAD_IN,  gap_prev * GAP_SHARE)
+  lead_out = min(LEAD_OUT, gap_next * GAP_SHARE)
+  # GAP_SHARE = 0.40 —— 两行各让 40%, 合计 80%, 仍留 20% 空隙
+  ```
+
+- **验收**：`make_ass.py` 会自己扫一遍显示区间并打印「重叠行对」，必须为 0；再抽间隔最小那一对的前后两帧肉眼确认
+
+### 6.14 stdout wrapper 相撞（比 §6.10 更广的版本）
+- §6.10 的结论原本写作"**库**模块不得碰 `sys.stdout`"，范围定窄了
+- 后来 `render_effects.py`（一个**脚本**）被 `make_mixed.py` 当模块 import，同样的错误又犯了一次
+- **修正后的规则**：**任何可能被 import 的文件**都不得触碰 `sys.stdout`，不区分"库"还是"脚本"
 
 ### 6.12 audio-separator 的静默 OOM
 - **现象**：只报 `Separation produced no output files`

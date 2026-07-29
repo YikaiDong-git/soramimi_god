@@ -1,0 +1,31 @@
+﻿[Script Info]
+; 空耳卡拉OK — 打上花火
+; 生成: make_ass.py  配色: cool_cyan
+Title: dashanghuahuo soramimi (cool_cyan)
+ScriptType: v4.00+
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+YCbCr Matrix: TV.709
+PlayResX: 1920
+PlayResY: 1080
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sora,Microsoft YaHei,78,&H00F0C000&,&H00FFFFFF&,&H00301808&,&H80000000&,-1,0,0,0,100,100,2,0,1,4.0,2.0,2,60,60,96,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:25.72,0:00:30.51,Sora,,0,0,0,,{\fad(120,120)}{\kf34}好{\kf24}难{\kf58}以{\kf42}灭{\kf62}我{\kf26}的{\kf34}心{\kf28}头{\kf40}那{\kf28}一{\kf30}刹{\kf48}啊
+Dialogue: 0,0:00:30.72,0:00:34.83,Sora,,0,0,0,,{\fad(120,120)}{\kf32}盈{\kf28}满{\kf52}脉{\kf12}脉{\kf94}的{\kf68}思{\kf100}量
+Dialogue: 0,0:00:35.70,0:00:40.49,Sora,,0,0,0,,{\fad(120,120)}{\kf36}似{\kf28}那{\kf70}么{\kf22}怀{\kf56}念{\kf40}记{\kf62}载{\kf28}太{\kf34}多{\kf34}过{\kf44}往
+Dialogue: 0,0:00:40.70,0:00:44.65,Sora,,0,0,0,,{\fad(120,120)}{\kf42}启{\kf4}明{\kf56}流{\kf90}星{\kf22}流{\kf40}逝{\kf30}了{\kf86}它
+Dialogue: 0,0:00:45.72,0:00:49.13,Sora,,0,0,0,,{\fad(120,120)}{\kf36}犹{\kf28}离{\kf76}开 {\kf46}湿{\kf36}那{\kf26}面{\kf68}框
+Dialogue: 0,0:00:49.16,0:00:51.91,Sora,,0,0,0,,{\fad(120,120)}{\kf26}暗{\kf38}示{\kf30}我{\kf60}都{\kf34}要{\kf34}别{\kf28}离
+Dialogue: 0,0:00:51.66,0:00:54.59,Sora,,0,0,0,,{\fad(120,120)}{\kf34}那{\kf24}夜{\kf30}海{\kf34}鸥{\kf36}洒{\kf34}凉{\kf76}意
+Dialogue: 0,0:00:55.70,0:00:59.01,Sora,,0,0,0,,{\fad(120,120)}{\kf14}犹{\kf50}如{\kf96}那{\kf30}冰{\kf26}冷{\kf36}的{\kf54}光
+Dialogue: 0,0:00:59.14,0:01:04.32,Sora,,0,0,0,,{\fad(120,120)}{\kf32}已{\kf34}枯{\kf28}落{\kf34}的{\kf28}疙{\kf32}瘩{\kf44}当{\kf24}年{\kf58}肆{\kf32}意{\kf32}的{\kf32}烟{\kf82}花
+Dialogue: 0,0:01:05.73,0:01:08.26,Sora,,0,0,0,,{\fad(120,120)}{\kf22}啪！{\kf22}灯{\kf18}火{\kf24}光{\kf10}陡{\kf50}闪{\kf28}一{\kf54}刹
+Dialogue: 0,0:01:08.23,0:01:10.70,Sora,,0,0,0,,{\fad(120,120)}{\kf34}哈！{\kf18}那{\kf12}笔{\kf30}画{\kf32}满{\kf4}天{\kf20}一{\kf76}方
+Dialogue: 0,0:01:10.73,0:01:15.10,Sora,,0,0,0,,{\fad(120,120)}{\kf22}记{\kf6}得{\kf20}我{\kf74}吗，{\kf22}偶{\kf28}然{\kf32}浪{\kf30}漫{\kf36}的{\kf26}时{\kf116}光？
+Dialogue: 0,0:01:15.75,0:01:18.24,Sora,,0,0,0,,{\fad(120,120)}{\kf34}爱{\kf12}埋{\kf16}于{\kf28}那{\kf34}颗{\kf18}颗{\kf24}落{\kf58}幕
+Dialogue: 0,0:01:18.25,0:01:20.68,Sora,,0,0,0,,{\fad(120,120)}{\kf30}打{\kf16}开{\kf18}心{\kf24}铁{\kf36}锁{\kf20}那{\kf28}一{\kf46}搭

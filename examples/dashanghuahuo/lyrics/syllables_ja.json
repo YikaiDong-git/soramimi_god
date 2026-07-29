@@ -1,0 +1,4118 @@
+[
+  {
+    "line": 0,
+    "raw": "? sound hodori?????? saundo hodori",
+    "n_syllables": 14,
+    "start_s": 0.06,
+    "end_s": 0.52,
+    "syllables": [
+      {
+        "v": "so",
+        "start_s": 0.06,
+        "end_s": 0.1
+      },
+      {
+        "v": "u",
+        "start_s": 0.1,
+        "end_s": 0.12
+      },
+      {
+        "v": "n",
+        "start_s": 0.12,
+        "end_s": 0.14
+      },
+      {
+        "v": "d",
+        "start_s": 0.14,
+        "end_s": 0.16
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 0.16,
+        "end_s": 0.2
+      },
+      {
+        "v": "do",
+        "start_s": 0.2,
+        "end_s": 0.24
+      },
+      {
+        "v": "ri",
+        "start_s": 0.24,
+        "end_s": 0.28
+      },
+      null,
+      {
+        "v": "sa",
+        "start_s": 0.28,
+        "end_s": 0.32
+      },
+      {
+        "v": "u",
+        "start_s": 0.32,
+        "end_s": 0.34
+      },
+      {
+        "v": "n",
+        "start_s": 0.34,
+        "end_s": 0.36
+      },
+      {
+        "v": "do",
+        "start_s": 0.36,
+        "end_s": 0.4
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 0.4,
+        "end_s": 0.44
+      },
+      {
+        "v": "do",
+        "start_s": 0.44,
+        "end_s": 0.48
+      },
+      {
+        "v": "ri",
+        "start_s": 0.48,
+        "end_s": 0.52
+      }
+    ]
+  },
+  {
+    "line": 1,
+    "raw": "instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori instagram & twitter hodori inst ndu hodori ano hi miwatashita nagisa wo ima mo omoidasu n da suna no ue ni kizanda kotobakun no ushirosugata yori ka tsunami ga ashimoto wo yogiri nan ka wo sarau yuunagi no naka higure dake ga toorisugite yuku pat to hikatte saita hanabi wo miteta",
+    "n_syllables": 278,
+    "start_s": 0.54,
+    "end_s": 70.4456,
+    "syllables": [
+      {
+        "v": "i",
+        "start_s": 0.54,
+        "end_s": 0.56
+      },
+      {
+        "v": "n",
+        "start_s": 0.56,
+        "end_s": 0.58
+      },
+      {
+        "v": "s",
+        "start_s": 0.58,
+        "end_s": 0.6
+      },
+      {
+        "v": "ta",
+        "start_s": 0.6,
+        "end_s": 0.6401
+      },
+      {
+        "v": "g",
+        "start_s": 0.6401,
+        "end_s": 0.6601
+      },
+      {
+        "v": "ra",
+        "start_s": 0.6601,
+        "end_s": 0.7001
+      },
+      {
+        "v": "m",
+        "start_s": 0.7001,
+        "end_s": 0.7201
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 0.7201,
+        "end_s": 0.7401
+      },
+      {
+        "v": "wi",
+        "start_s": 0.7401,
+        "end_s": 0.7801
+      },
+      {
+        "v": "t",
+        "start_s": 0.7801,
+        "end_s": 0.8001
+      },
+      {
+        "v": "te",
+        "start_s": 0.8201,
+        "end_s": 0.8601
+      },
+      {
+        "v": "r",
+        "start_s": 0.8601,
+        "end_s": 0.8801
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 0.8801,
+        "end_s": 0.9201
+      },
+      {
+        "v": "do",
+        "start_s": 0.9201,
+        "end_s": 0.9601
+      },
+      {
+        "v": "ri",
+        "start_s": 0.9601,
+        "end_s": 1.0001
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 1.0201,
+        "end_s": 1.0401
+      },
+      {
+        "v": "n",
+        "start_s": 1.0401,
+        "end_s": 1.0601
+      },
+      {
+        "v": "s",
+        "start_s": 1.0601,
+        "end_s": 1.0801
+      },
+      {
+        "v": "ta",
+        "start_s": 1.0801,
+        "end_s": 1.1201
+      },
+      {
+        "v": "g",
+        "start_s": 1.1201,
+        "end_s": 1.1401
+      },
+      {
+        "v": "ra",
+        "start_s": 1.1401,
+        "end_s": 1.1801
+      },
+      {
+        "v": "m",
+        "start_s": 1.1801,
+        "end_s": 1.2001
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 1.2001,
+        "end_s": 1.2201
+      },
+      {
+        "v": "wi",
+        "start_s": 1.2201,
+        "end_s": 1.2601
+      },
+      {
+        "v": "t",
+        "start_s": 1.2601,
+        "end_s": 1.2801
+      },
+      {
+        "v": "te",
+        "start_s": 1.3001,
+        "end_s": 1.3401
+      },
+      {
+        "v": "r",
+        "start_s": 1.3401,
+        "end_s": 1.3601
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 1.3601,
+        "end_s": 1.4001
+      },
+      {
+        "v": "do",
+        "start_s": 1.4001,
+        "end_s": 1.4401
+      },
+      {
+        "v": "ri",
+        "start_s": 1.4401,
+        "end_s": 1.4801
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 1.5001,
+        "end_s": 1.5201
+      },
+      {
+        "v": "n",
+        "start_s": 1.5201,
+        "end_s": 1.5401
+      },
+      {
+        "v": "s",
+        "start_s": 1.5401,
+        "end_s": 1.5601
+      },
+      {
+        "v": "ta",
+        "start_s": 1.5601,
+        "end_s": 1.6001
+      },
+      {
+        "v": "g",
+        "start_s": 1.6001,
+        "end_s": 1.6201
+      },
+      {
+        "v": "ra",
+        "start_s": 1.6201,
+        "end_s": 1.6601
+      },
+      {
+        "v": "m",
+        "start_s": 1.6601,
+        "end_s": 1.6801
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 1.6801,
+        "end_s": 1.7001
+      },
+      {
+        "v": "wi",
+        "start_s": 1.7001,
+        "end_s": 1.7401
+      },
+      {
+        "v": "t",
+        "start_s": 1.7401,
+        "end_s": 1.7601
+      },
+      {
+        "v": "te",
+        "start_s": 1.7801,
+        "end_s": 1.8201
+      },
+      {
+        "v": "r",
+        "start_s": 1.8201,
+        "end_s": 1.8401
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 1.8401,
+        "end_s": 1.8801
+      },
+      {
+        "v": "do",
+        "start_s": 1.8801,
+        "end_s": 1.9202
+      },
+      {
+        "v": "ri",
+        "start_s": 1.9202,
+        "end_s": 1.9602
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 1.9802,
+        "end_s": 2.0002
+      },
+      {
+        "v": "n",
+        "start_s": 2.0002,
+        "end_s": 2.0202
+      },
+      {
+        "v": "s",
+        "start_s": 2.0202,
+        "end_s": 2.0402
+      },
+      {
+        "v": "ta",
+        "start_s": 2.0402,
+        "end_s": 2.0802
+      },
+      {
+        "v": "g",
+        "start_s": 2.0802,
+        "end_s": 2.1002
+      },
+      {
+        "v": "ra",
+        "start_s": 2.1002,
+        "end_s": 2.1402
+      },
+      {
+        "v": "m",
+        "start_s": 2.1402,
+        "end_s": 2.1602
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 2.1602,
+        "end_s": 2.1802
+      },
+      {
+        "v": "wi",
+        "start_s": 2.1802,
+        "end_s": 2.2202
+      },
+      {
+        "v": "t",
+        "start_s": 2.2202,
+        "end_s": 2.2402
+      },
+      {
+        "v": "te",
+        "start_s": 2.2602,
+        "end_s": 2.3002
+      },
+      {
+        "v": "r",
+        "start_s": 2.3002,
+        "end_s": 2.3202
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 2.3202,
+        "end_s": 2.3602
+      },
+      {
+        "v": "do",
+        "start_s": 2.3602,
+        "end_s": 2.4002
+      },
+      {
+        "v": "ri",
+        "start_s": 2.4002,
+        "end_s": 2.4402
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 2.4602,
+        "end_s": 2.4802
+      },
+      {
+        "v": "n",
+        "start_s": 2.4802,
+        "end_s": 2.5002
+      },
+      {
+        "v": "s",
+        "start_s": 2.5002,
+        "end_s": 2.5202
+      },
+      {
+        "v": "ta",
+        "start_s": 2.5202,
+        "end_s": 2.5602
+      },
+      {
+        "v": "g",
+        "start_s": 2.5602,
+        "end_s": 2.5802
+      },
+      {
+        "v": "ra",
+        "start_s": 2.5802,
+        "end_s": 2.6202
+      },
+      {
+        "v": "m",
+        "start_s": 2.6202,
+        "end_s": 2.6402
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 2.6402,
+        "end_s": 2.6602
+      },
+      {
+        "v": "wi",
+        "start_s": 2.6602,
+        "end_s": 2.7002
+      },
+      {
+        "v": "t",
+        "start_s": 2.7002,
+        "end_s": 2.7202
+      },
+      {
+        "v": "te",
+        "start_s": 2.7402,
+        "end_s": 2.7802
+      },
+      {
+        "v": "r",
+        "start_s": 2.7802,
+        "end_s": 2.8002
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 2.8002,
+        "end_s": 2.8402
+      },
+      {
+        "v": "do",
+        "start_s": 2.8402,
+        "end_s": 2.8802
+      },
+      {
+        "v": "ri",
+        "start_s": 2.8802,
+        "end_s": 2.9202
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 2.9402,
+        "end_s": 2.9602
+      },
+      {
+        "v": "n",
+        "start_s": 2.9602,
+        "end_s": 2.9802
+      },
+      {
+        "v": "s",
+        "start_s": 2.9802,
+        "end_s": 3.0002
+      },
+      {
+        "v": "ta",
+        "start_s": 3.0002,
+        "end_s": 3.0402
+      },
+      {
+        "v": "g",
+        "start_s": 3.0402,
+        "end_s": 3.0602
+      },
+      {
+        "v": "ra",
+        "start_s": 3.0602,
+        "end_s": 3.1002
+      },
+      {
+        "v": "m",
+        "start_s": 3.1002,
+        "end_s": 3.1202
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 3.1202,
+        "end_s": 3.1402
+      },
+      {
+        "v": "wi",
+        "start_s": 3.1402,
+        "end_s": 3.1803
+      },
+      {
+        "v": "t",
+        "start_s": 3.1803,
+        "end_s": 3.2003
+      },
+      {
+        "v": "te",
+        "start_s": 3.2203,
+        "end_s": 3.2603
+      },
+      {
+        "v": "r",
+        "start_s": 3.2603,
+        "end_s": 3.2803
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 3.2803,
+        "end_s": 3.3203
+      },
+      {
+        "v": "do",
+        "start_s": 3.3203,
+        "end_s": 3.3603
+      },
+      {
+        "v": "ri",
+        "start_s": 3.3603,
+        "end_s": 3.4003
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 3.4203,
+        "end_s": 3.4403
+      },
+      {
+        "v": "n",
+        "start_s": 3.4403,
+        "end_s": 3.4603
+      },
+      {
+        "v": "s",
+        "start_s": 3.4603,
+        "end_s": 3.4803
+      },
+      {
+        "v": "ta",
+        "start_s": 3.4803,
+        "end_s": 3.5203
+      },
+      {
+        "v": "g",
+        "start_s": 3.5203,
+        "end_s": 3.5403
+      },
+      {
+        "v": "ra",
+        "start_s": 3.5403,
+        "end_s": 3.5803
+      },
+      {
+        "v": "m",
+        "start_s": 3.5803,
+        "end_s": 3.6003
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 3.6003,
+        "end_s": 3.6203
+      },
+      {
+        "v": "wi",
+        "start_s": 3.6203,
+        "end_s": 3.6603
+      },
+      {
+        "v": "t",
+        "start_s": 10.0408,
+        "end_s": 10.0608
+      },
+      {
+        "v": "te",
+        "start_s": 10.5408,
+        "end_s": 10.5808
+      },
+      {
+        "v": "r",
+        "start_s": 11.1609,
+        "end_s": 11.1809
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 11.1809,
+        "end_s": 11.2209
+      },
+      {
+        "v": "do",
+        "start_s": 11.2209,
+        "end_s": 11.2609
+      },
+      {
+        "v": "ri",
+        "start_s": 11.2609,
+        "end_s": 11.3009
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 11.3209,
+        "end_s": 11.3409
+      },
+      {
+        "v": "n",
+        "start_s": 11.3409,
+        "end_s": 11.3609
+      },
+      {
+        "v": "s",
+        "start_s": 11.3609,
+        "end_s": 11.3809
+      },
+      {
+        "v": "ta",
+        "start_s": 11.3809,
+        "end_s": 11.4209
+      },
+      {
+        "v": "g",
+        "start_s": 11.4209,
+        "end_s": 11.4409
+      },
+      {
+        "v": "ra",
+        "start_s": 11.9409,
+        "end_s": 11.981
+      },
+      {
+        "v": "m",
+        "start_s": 11.981,
+        "end_s": 12.001
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 12.261,
+        "end_s": 12.281
+      },
+      {
+        "v": "wi",
+        "start_s": 12.281,
+        "end_s": 12.321
+      },
+      {
+        "v": "t",
+        "start_s": 12.321,
+        "end_s": 12.341
+      },
+      {
+        "v": "te",
+        "start_s": 12.361,
+        "end_s": 13.3611
+      },
+      {
+        "v": "r",
+        "start_s": 13.3611,
+        "end_s": 13.3811
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 13.3811,
+        "end_s": 13.4211
+      },
+      {
+        "v": "do",
+        "start_s": 13.4211,
+        "end_s": 13.4611
+      },
+      {
+        "v": "ri",
+        "start_s": 13.4611,
+        "end_s": 13.5011
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 13.5211,
+        "end_s": 13.5411
+      },
+      {
+        "v": "n",
+        "start_s": 13.5411,
+        "end_s": 13.5611
+      },
+      {
+        "v": "s",
+        "start_s": 13.5611,
+        "end_s": 13.5811
+      },
+      {
+        "v": "ta",
+        "start_s": 13.5811,
+        "end_s": 13.6211
+      },
+      {
+        "v": "g",
+        "start_s": 13.6211,
+        "end_s": 13.6411
+      },
+      {
+        "v": "ra",
+        "start_s": 13.6411,
+        "end_s": 13.6811
+      },
+      {
+        "v": "m",
+        "start_s": 13.8211,
+        "end_s": 13.8411
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 13.8411,
+        "end_s": 13.8611
+      },
+      {
+        "v": "wi",
+        "start_s": 13.8611,
+        "end_s": 13.9011
+      },
+      {
+        "v": "t",
+        "start_s": 14.0411,
+        "end_s": 14.0611
+      },
+      {
+        "v": "te",
+        "start_s": 14.8012,
+        "end_s": 15.7412
+      },
+      {
+        "v": "r",
+        "start_s": 15.7412,
+        "end_s": 15.7613
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 15.7613,
+        "end_s": 15.8013
+      },
+      {
+        "v": "do",
+        "start_s": 15.9213,
+        "end_s": 15.9613
+      },
+      {
+        "v": "ri",
+        "start_s": 15.9613,
+        "end_s": 16.0013
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 16.0213,
+        "end_s": 16.0413
+      },
+      {
+        "v": "n",
+        "start_s": 16.0413,
+        "end_s": 16.0613
+      },
+      {
+        "v": "s",
+        "start_s": 16.0613,
+        "end_s": 16.0813
+      },
+      {
+        "v": "ta",
+        "start_s": 16.0813,
+        "end_s": 16.1213
+      },
+      {
+        "v": "g",
+        "start_s": 16.1213,
+        "end_s": 16.1413
+      },
+      {
+        "v": "ra",
+        "start_s": 23.9619,
+        "end_s": 24.0019
+      },
+      {
+        "v": "m",
+        "start_s": 24.0019,
+        "end_s": 24.0219
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 24.0219,
+        "end_s": 24.0419
+      },
+      {
+        "v": "wi",
+        "start_s": 24.0419,
+        "end_s": 24.0819
+      },
+      {
+        "v": "t",
+        "start_s": 24.0819,
+        "end_s": 24.1019
+      },
+      {
+        "v": "te",
+        "start_s": 24.1219,
+        "end_s": 24.1619
+      },
+      {
+        "v": "r",
+        "start_s": 24.1619,
+        "end_s": 24.1819
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 24.1819,
+        "end_s": 24.2219
+      },
+      {
+        "v": "do",
+        "start_s": 24.2219,
+        "end_s": 24.2619
+      },
+      {
+        "v": "ri",
+        "start_s": 24.2619,
+        "end_s": 24.3019
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 24.3219,
+        "end_s": 24.3419
+      },
+      {
+        "v": "n",
+        "start_s": 24.3419,
+        "end_s": 24.3619
+      },
+      {
+        "v": "s",
+        "start_s": 24.3619,
+        "end_s": 24.3819
+      },
+      {
+        "v": "ta",
+        "start_s": 24.3819,
+        "end_s": 24.742
+      },
+      {
+        "v": "g",
+        "start_s": 24.742,
+        "end_s": 24.762
+      },
+      {
+        "v": "ra",
+        "start_s": 24.762,
+        "end_s": 24.802
+      },
+      {
+        "v": "m",
+        "start_s": 24.802,
+        "end_s": 24.822
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 24.822,
+        "end_s": 24.842
+      },
+      {
+        "v": "wi",
+        "start_s": 24.842,
+        "end_s": 24.882
+      },
+      {
+        "v": "t",
+        "start_s": 24.882,
+        "end_s": 24.902
+      },
+      {
+        "v": "te",
+        "start_s": 24.922,
+        "end_s": 24.962
+      },
+      {
+        "v": "r",
+        "start_s": 24.962,
+        "end_s": 24.982
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 24.982,
+        "end_s": 25.022
+      },
+      {
+        "v": "do",
+        "start_s": 25.022,
+        "end_s": 25.062
+      },
+      {
+        "v": "ri",
+        "start_s": 25.062,
+        "end_s": 25.102
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 25.122,
+        "end_s": 25.142
+      },
+      {
+        "v": "n",
+        "start_s": 25.142,
+        "end_s": 25.162
+      },
+      {
+        "v": "s",
+        "start_s": 25.202,
+        "end_s": 25.222
+      },
+      {
+        "v": "t",
+        "start_s": 25.222,
+        "end_s": 25.242
+      },
+      null,
+      {
+        "v": "n",
+        "start_s": 25.242,
+        "end_s": 25.262
+      },
+      {
+        "v": "du",
+        "start_s": 25.262,
+        "end_s": 25.302
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 25.302,
+        "end_s": 25.342
+      },
+      {
+        "v": "do",
+        "start_s": 25.342,
+        "end_s": 25.402
+      },
+      {
+        "v": "ri",
+        "start_s": 25.402,
+        "end_s": 25.442
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 25.722,
+        "end_s": 26.0621
+      },
+      {
+        "v": "no",
+        "start_s": 26.0621,
+        "end_s": 26.3021
+      },
+      null,
+      {
+        "v": "hi",
+        "start_s": 26.3021,
+        "end_s": 26.8821
+      },
+      null,
+      {
+        "v": "mi",
+        "start_s": 26.8821,
+        "end_s": 27.3022
+      },
+      {
+        "v": "wa",
+        "start_s": 27.3022,
+        "end_s": 27.9222
+      },
+      {
+        "v": "ta",
+        "start_s": 27.9222,
+        "end_s": 28.1822
+      },
+      {
+        "v": "shi",
+        "start_s": 28.1822,
+        "end_s": 28.5223
+      },
+      {
+        "v": "ta",
+        "start_s": 28.5223,
+        "end_s": 28.8023
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 28.8023,
+        "end_s": 29.2023
+      },
+      {
+        "v": "gi",
+        "start_s": 29.2023,
+        "end_s": 29.4823
+      },
+      {
+        "v": "sa",
+        "start_s": 29.4823,
+        "end_s": 29.7824
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 29.7824,
+        "end_s": 30.2624
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 30.7224,
+        "end_s": 31.0425
+      },
+      {
+        "v": "ma",
+        "start_s": 31.0425,
+        "end_s": 31.3225
+      },
+      null,
+      {
+        "v": "mo",
+        "start_s": 31.3225,
+        "end_s": 31.8225
+      },
+      null,
+      {
+        "v": "o",
+        "start_s": 31.8425,
+        "end_s": 31.9625
+      },
+      {
+        "v": "mo",
+        "start_s": 31.9625,
+        "end_s": 32.3626
+      },
+      {
+        "v": "i",
+        "start_s": 32.3626,
+        "end_s": 32.6226
+      },
+      {
+        "v": "da",
+        "start_s": 32.6226,
+        "end_s": 32.9026
+      },
+      {
+        "v": "su",
+        "start_s": 32.9026,
+        "end_s": 33.3626
+      },
+      null,
+      {
+        "v": "n",
+        "start_s": 33.3626,
+        "end_s": 33.5827
+      },
+      null,
+      {
+        "v": "da",
+        "start_s": 33.5827,
+        "end_s": 34.5827
+      },
+      null,
+      {
+        "v": "su",
+        "start_s": 35.7028,
+        "end_s": 36.0629
+      },
+      {
+        "v": "na",
+        "start_s": 36.0629,
+        "end_s": 36.3429
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 36.3429,
+        "end_s": 36.8029
+      },
+      null,
+      {
+        "v": "u",
+        "start_s": 36.8029,
+        "end_s": 37.0429
+      },
+      {
+        "v": "e",
+        "start_s": 37.0429,
+        "end_s": 37.263
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 37.263,
+        "end_s": 37.823
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 37.823,
+        "end_s": 38.223
+      },
+      {
+        "v": "za",
+        "start_s": 38.223,
+        "end_s": 38.5231
+      },
+      {
+        "v": "n",
+        "start_s": 38.5231,
+        "end_s": 38.8431
+      },
+      {
+        "v": "da",
+        "start_s": 38.8431,
+        "end_s": 39.1231
+      },
+      null,
+      {
+        "v": "ko",
+        "start_s": 39.1231,
+        "end_s": 39.4631
+      },
+      {
+        "v": "to",
+        "start_s": 39.4631,
+        "end_s": 39.8032
+      },
+      {
+        "v": "ba",
+        "start_s": 39.8032,
+        "end_s": 40.2432
+      },
+      {
+        "v": "ku",
+        "start_s": 40.7032,
+        "end_s": 41.0833
+      },
+      {
+        "v": "n",
+        "start_s": 41.1233,
+        "end_s": 41.1433
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 41.1633,
+        "end_s": 41.7233
+      },
+      null,
+      {
+        "v": "u",
+        "start_s": 41.7233,
+        "end_s": 41.9233
+      },
+      {
+        "v": "shi",
+        "start_s": 41.9233,
+        "end_s": 42.6234
+      },
+      {
+        "v": "ro",
+        "start_s": 42.6234,
+        "end_s": 42.8434
+      },
+      {
+        "v": "su",
+        "start_s": 42.8434,
+        "end_s": 43.2434
+      },
+      {
+        "v": "ga",
+        "start_s": 43.2434,
+        "end_s": 43.5435
+      },
+      {
+        "v": "ta",
+        "start_s": 43.5435,
+        "end_s": 44.4035
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 45.7236,
+        "end_s": 46.0837
+      },
+      {
+        "v": "ri",
+        "start_s": 46.0837,
+        "end_s": 46.3637
+      },
+      null,
+      {
+        "v": "ka",
+        "start_s": 46.3637,
+        "end_s": 47.1237
+      },
+      null,
+      {
+        "v": "tsu",
+        "start_s": 47.1237,
+        "end_s": 47.5838
+      },
+      {
+        "v": "na",
+        "start_s": 47.5838,
+        "end_s": 47.9438
+      },
+      {
+        "v": "mi",
+        "start_s": 47.9438,
+        "end_s": 48.2038
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 48.2038,
+        "end_s": 48.8839
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 49.1639,
+        "end_s": 49.4239
+      },
+      {
+        "v": "shi",
+        "start_s": 49.4239,
+        "end_s": 49.804
+      },
+      {
+        "v": "mo",
+        "start_s": 49.804,
+        "end_s": 50.104
+      },
+      {
+        "v": "to",
+        "start_s": 50.104,
+        "end_s": 50.424
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 50.424,
+        "end_s": 50.704
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 50.704,
+        "end_s": 51.0441
+      },
+      {
+        "v": "gi",
+        "start_s": 51.0441,
+        "end_s": 51.3841
+      },
+      {
+        "v": "ri",
+        "start_s": 51.3841,
+        "end_s": 51.6641
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 51.6641,
+        "end_s": 52.0041
+      },
+      {
+        "v": "n",
+        "start_s": 52.0041,
+        "end_s": 52.2441
+      },
+      null,
+      {
+        "v": "ka",
+        "start_s": 52.2441,
+        "end_s": 52.5442
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 52.5442,
+        "end_s": 52.8842
+      },
+      null,
+      {
+        "v": "sa",
+        "start_s": 52.8842,
+        "end_s": 53.2442
+      },
+      {
+        "v": "ra",
+        "start_s": 53.2442,
+        "end_s": 53.5843
+      },
+      {
+        "v": "u",
+        "start_s": 53.5843,
+        "end_s": 54.3443
+      },
+      null,
+      {
+        "v": "yu",
+        "start_s": 55.7044,
+        "end_s": 55.8244
+      },
+      {
+        "v": "u",
+        "start_s": 55.8444,
+        "end_s": 56.3445
+      },
+      {
+        "v": "na",
+        "start_s": 56.3445,
+        "end_s": 57.3045
+      },
+      {
+        "v": "gi",
+        "start_s": 57.3045,
+        "end_s": 57.6046
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 57.6046,
+        "end_s": 57.8646
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 57.8646,
+        "end_s": 58.2246
+      },
+      {
+        "v": "ka",
+        "start_s": 58.2246,
+        "end_s": 58.7647
+      },
+      null,
+      {
+        "v": "hi",
+        "start_s": 59.1447,
+        "end_s": 59.4647
+      },
+      {
+        "v": "gu",
+        "start_s": 59.4647,
+        "end_s": 59.8047
+      },
+      {
+        "v": "re",
+        "start_s": 59.8047,
+        "end_s": 60.0848
+      },
+      null,
+      {
+        "v": "da",
+        "start_s": 60.0848,
+        "end_s": 60.4248
+      },
+      {
+        "v": "ke",
+        "start_s": 60.4248,
+        "end_s": 60.7048
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 60.7048,
+        "end_s": 61.0248
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 61.0248,
+        "end_s": 61.4449
+      },
+      {
+        "v": "o",
+        "start_s": 61.4649,
+        "end_s": 61.7049
+      },
+      {
+        "v": "ri",
+        "start_s": 61.7049,
+        "end_s": 61.9449
+      },
+      {
+        "v": "su",
+        "start_s": 61.9449,
+        "end_s": 62.2849
+      },
+      {
+        "v": "gi",
+        "start_s": 62.2849,
+        "end_s": 62.605
+      },
+      {
+        "v": "te",
+        "start_s": 62.605,
+        "end_s": 62.925
+      },
+      null,
+      {
+        "v": "yu",
+        "start_s": 62.925,
+        "end_s": 63.245
+      },
+      {
+        "v": "ku",
+        "start_s": 63.245,
+        "end_s": 64.0651
+      },
+      null,
+      {
+        "v": "pa",
+        "start_s": 65.7252,
+        "end_s": 65.9052
+      },
+      {
+        "v": "t",
+        "start_s": 65.9052,
+        "end_s": 65.9252
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 65.9452,
+        "end_s": 66.1653
+      },
+      null,
+      {
+        "v": "hi",
+        "start_s": 66.1653,
+        "end_s": 66.3453
+      },
+      {
+        "v": "ka",
+        "start_s": 66.3453,
+        "end_s": 66.5853
+      },
+      {
+        "v": "t",
+        "start_s": 66.5853,
+        "end_s": 66.6653
+      },
+      {
+        "v": "te",
+        "start_s": 66.6853,
+        "end_s": 66.9253
+      },
+      null,
+      {
+        "v": "sa",
+        "start_s": 66.9253,
+        "end_s": 67.1853
+      },
+      {
+        "v": "i",
+        "start_s": 67.1853,
+        "end_s": 67.4654
+      },
+      {
+        "v": "ta",
+        "start_s": 67.4654,
+        "end_s": 68.0054
+      },
+      null,
+      {
+        "v": "ha",
+        "start_s": 68.2254,
+        "end_s": 68.5654
+      },
+      {
+        "v": "na",
+        "start_s": 68.5654,
+        "end_s": 68.7455
+      },
+      {
+        "v": "bi",
+        "start_s": 68.7455,
+        "end_s": 68.8655
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 68.8655,
+        "end_s": 69.1655
+      },
+      null,
+      {
+        "v": "mi",
+        "start_s": 69.1655,
+        "end_s": 69.4855
+      },
+      {
+        "v": "te",
+        "start_s": 69.4855,
+        "end_s": 69.6855
+      },
+      {
+        "v": "ta",
+        "start_s": 69.6855,
+        "end_s": 70.4456
+      }
+    ]
+  },
+  {
+    "line": 2,
+    "raw": "kitto mada owaranai natsu da",
+    "n_syllables": 13,
+    "start_s": 70.7256,
+    "end_s": 74.8459,
+    "syllables": [
+      {
+        "v": "ki",
+        "start_s": 70.7256,
+        "end_s": 70.9456
+      },
+      {
+        "v": "t",
+        "start_s": 70.9456,
+        "end_s": 70.9856
+      },
+      {
+        "v": "to",
+        "start_s": 71.0056,
+        "end_s": 71.2057
+      },
+      null,
+      {
+        "v": "ma",
+        "start_s": 71.2057,
+        "end_s": 71.3857
+      },
+      {
+        "v": "da",
+        "start_s": 71.3857,
+        "end_s": 71.8257
+      },
+      null,
+      {
+        "v": "o",
+        "start_s": 71.9457,
+        "end_s": 72.1657
+      },
+      {
+        "v": "wa",
+        "start_s": 72.1657,
+        "end_s": 72.4457
+      },
+      {
+        "v": "ra",
+        "start_s": 72.4457,
+        "end_s": 72.7658
+      },
+      {
+        "v": "na",
+        "start_s": 72.7658,
+        "end_s": 73.0658
+      },
+      {
+        "v": "i",
+        "start_s": 73.0658,
+        "end_s": 73.2458
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 73.2458,
+        "end_s": 73.4258
+      },
+      {
+        "v": "tsu",
+        "start_s": 73.4258,
+        "end_s": 73.6858
+      },
+      null,
+      {
+        "v": "da",
+        "start_s": 73.6858,
+        "end_s": 74.8459
+      }
+    ]
+  },
+  {
+    "line": 3,
+    "raw": "aimai na kokoro wo tokashite tsunaida",
+    "n_syllables": 17,
+    "start_s": 75.746,
+    "end_s": 80.4264,
+    "syllables": [
+      {
+        "v": "a",
+        "start_s": 75.746,
+        "end_s": 75.906
+      },
+      {
+        "v": "i",
+        "start_s": 75.906,
+        "end_s": 76.086
+      },
+      {
+        "v": "ma",
+        "start_s": 76.086,
+        "end_s": 76.206
+      },
+      {
+        "v": "i",
+        "start_s": 76.206,
+        "end_s": 76.3661
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 76.3661,
+        "end_s": 76.6461
+      },
+      null,
+      {
+        "v": "ko",
+        "start_s": 76.6461,
+        "end_s": 76.9861
+      },
+      {
+        "v": "ko",
+        "start_s": 76.9861,
+        "end_s": 77.1661
+      },
+      {
+        "v": "ro",
+        "start_s": 77.1661,
+        "end_s": 77.4061
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 77.4061,
+        "end_s": 77.9862
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 78.2462,
+        "end_s": 78.5462
+      },
+      {
+        "v": "ka",
+        "start_s": 78.5462,
+        "end_s": 78.7062
+      },
+      {
+        "v": "shi",
+        "start_s": 78.7062,
+        "end_s": 78.8863
+      },
+      {
+        "v": "te",
+        "start_s": 78.8863,
+        "end_s": 79.1263
+      },
+      null,
+      {
+        "v": "tsu",
+        "start_s": 79.1263,
+        "end_s": 79.4863
+      },
+      {
+        "v": "na",
+        "start_s": 79.4863,
+        "end_s": 79.6863
+      },
+      {
+        "v": "i",
+        "start_s": 79.6863,
+        "end_s": 79.9663
+      },
+      {
+        "v": "da",
+        "start_s": 79.9663,
+        "end_s": 80.4264
+      }
+    ]
+  },
+  {
+    "line": 4,
+    "raw": "kono yoru ga atsu sugite hoshikatta ato nan dokun to onaji hanabi wo mirareru ka na tte warau kao ni nan ga dekirudarou ka kizutsuku koto yorokobu koto kurikaesu nami to joudou shousou saishuu ressha no oto nan do de mo kotoba ni shite kimi wo yobu yo namima wo erabi mou ichi do mou ni do to kanashimazu ni sumu you ni hatto iki wo nomeba kiechai sou na hikari ga kitto mada mune ni sunde ita te wo nobaseba fureta atatakai mirai wa hisoka ni futari wo mite ita? to hanabi ga",
+    "n_syllables": 205,
+    "start_s": 80.7464,
+    "end_s": 166.7132,
+    "syllables": [
+      {
+        "v": "ko",
+        "start_s": 80.7464,
+        "end_s": 80.9464
+      },
+      {
+        "v": "no",
+        "start_s": 80.9464,
+        "end_s": 81.0264
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 81.0264,
+        "end_s": 81.2464
+      },
+      {
+        "v": "ru",
+        "start_s": 81.2464,
+        "end_s": 81.3665
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 81.3665,
+        "end_s": 81.7665
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 81.7865,
+        "end_s": 81.8065
+      },
+      {
+        "v": "tsu",
+        "start_s": 81.8065,
+        "end_s": 81.9865
+      },
+      null,
+      {
+        "v": "su",
+        "start_s": 81.9865,
+        "end_s": 82.3465
+      },
+      {
+        "v": "gi",
+        "start_s": 82.3465,
+        "end_s": 82.6066
+      },
+      {
+        "v": "te",
+        "start_s": 82.6066,
+        "end_s": 82.8466
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 82.8466,
+        "end_s": 83.2066
+      },
+      {
+        "v": "shi",
+        "start_s": 83.2066,
+        "end_s": 83.5466
+      },
+      {
+        "v": "ka",
+        "start_s": 83.5466,
+        "end_s": 83.9467
+      },
+      {
+        "v": "t",
+        "start_s": 83.9467,
+        "end_s": 84.2067
+      },
+      {
+        "v": "ta",
+        "start_s": 84.2267,
+        "end_s": 85.7068
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 96.0876,
+        "end_s": 96.2476
+      },
+      {
+        "v": "to",
+        "start_s": 96.2476,
+        "end_s": 96.3876
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 96.3876,
+        "end_s": 96.5877
+      },
+      {
+        "v": "n",
+        "start_s": 96.5877,
+        "end_s": 96.7077
+      },
+      null,
+      {
+        "v": "do",
+        "start_s": 96.7077,
+        "end_s": 96.8677
+      },
+      {
+        "v": "ku",
+        "start_s": 96.8677,
+        "end_s": 97.0677
+      },
+      {
+        "v": "n",
+        "start_s": 97.0677,
+        "end_s": 97.1877
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 97.1877,
+        "end_s": 97.3677
+      },
+      null,
+      {
+        "v": "o",
+        "start_s": 97.3877,
+        "end_s": 97.6077
+      },
+      {
+        "v": "na",
+        "start_s": 97.6077,
+        "end_s": 97.8878
+      },
+      {
+        "v": "ji",
+        "start_s": 97.8878,
+        "end_s": 98.0678
+      },
+      null,
+      {
+        "v": "ha",
+        "start_s": 98.0678,
+        "end_s": 98.2278
+      },
+      {
+        "v": "na",
+        "start_s": 98.2278,
+        "end_s": 98.5678
+      },
+      {
+        "v": "bi",
+        "start_s": 98.5678,
+        "end_s": 98.7278
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 98.7278,
+        "end_s": 98.8878
+      },
+      null,
+      {
+        "v": "mi",
+        "start_s": 98.8878,
+        "end_s": 99.2079
+      },
+      {
+        "v": "ra",
+        "start_s": 99.2079,
+        "end_s": 99.3479
+      },
+      {
+        "v": "re",
+        "start_s": 99.3479,
+        "end_s": 99.4479
+      },
+      {
+        "v": "ru",
+        "start_s": 99.4479,
+        "end_s": 99.6279
+      },
+      null,
+      {
+        "v": "ka",
+        "start_s": 99.6279,
+        "end_s": 99.7879
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 99.7879,
+        "end_s": 100.0479
+      },
+      null,
+      {
+        "v": "t",
+        "start_s": 100.0479,
+        "end_s": 100.408
+      },
+      {
+        "v": "te",
+        "start_s": 100.428,
+        "end_s": 100.588
+      },
+      null,
+      {
+        "v": "wa",
+        "start_s": 100.768,
+        "end_s": 100.908
+      },
+      {
+        "v": "ra",
+        "start_s": 100.908,
+        "end_s": 101.068
+      },
+      {
+        "v": "u",
+        "start_s": 101.068,
+        "end_s": 101.188
+      },
+      null,
+      {
+        "v": "ka",
+        "start_s": 101.188,
+        "end_s": 101.408
+      },
+      {
+        "v": "o",
+        "start_s": 101.408,
+        "end_s": 101.6281
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 101.6281,
+        "end_s": 101.8281
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 101.8281,
+        "end_s": 102.0081
+      },
+      {
+        "v": "n",
+        "start_s": 102.0081,
+        "end_s": 102.2281
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 102.2281,
+        "end_s": 102.4481
+      },
+      null,
+      {
+        "v": "de",
+        "start_s": 102.4481,
+        "end_s": 102.6281
+      },
+      {
+        "v": "ki",
+        "start_s": 102.6281,
+        "end_s": 102.9482
+      },
+      {
+        "v": "ru",
+        "start_s": 102.9482,
+        "end_s": 103.0882
+      },
+      {
+        "v": "da",
+        "start_s": 103.0882,
+        "end_s": 103.2682
+      },
+      {
+        "v": "ro",
+        "start_s": 103.2682,
+        "end_s": 103.5482
+      },
+      {
+        "v": "u",
+        "start_s": 103.5482,
+        "end_s": 103.6682
+      },
+      null,
+      {
+        "v": "ka",
+        "start_s": 103.6682,
+        "end_s": 104.5483
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 106.0684,
+        "end_s": 106.2284
+      },
+      {
+        "v": "zu",
+        "start_s": 106.2284,
+        "end_s": 106.3684
+      },
+      {
+        "v": "tsu",
+        "start_s": 106.3684,
+        "end_s": 106.7085
+      },
+      {
+        "v": "ku",
+        "start_s": 106.7085,
+        "end_s": 106.8485
+      },
+      null,
+      {
+        "v": "ko",
+        "start_s": 106.8485,
+        "end_s": 107.0285
+      },
+      {
+        "v": "to",
+        "start_s": 107.0285,
+        "end_s": 107.2885
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 107.2885,
+        "end_s": 107.5285
+      },
+      {
+        "v": "ro",
+        "start_s": 107.5285,
+        "end_s": 107.6285
+      },
+      {
+        "v": "ko",
+        "start_s": 107.6285,
+        "end_s": 107.9486
+      },
+      {
+        "v": "bu",
+        "start_s": 107.9486,
+        "end_s": 108.0686
+      },
+      null,
+      {
+        "v": "ko",
+        "start_s": 108.0686,
+        "end_s": 108.2486
+      },
+      {
+        "v": "to",
+        "start_s": 108.2486,
+        "end_s": 108.5886
+      },
+      null,
+      {
+        "v": "ku",
+        "start_s": 108.5886,
+        "end_s": 108.7086
+      },
+      {
+        "v": "ri",
+        "start_s": 108.7086,
+        "end_s": 108.8886
+      },
+      {
+        "v": "ka",
+        "start_s": 108.8886,
+        "end_s": 109.0487
+      },
+      {
+        "v": "e",
+        "start_s": 109.0487,
+        "end_s": 109.1887
+      },
+      {
+        "v": "su",
+        "start_s": 109.1887,
+        "end_s": 109.3087
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 109.3087,
+        "end_s": 109.5087
+      },
+      {
+        "v": "mi",
+        "start_s": 109.5087,
+        "end_s": 109.6287
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 109.6287,
+        "end_s": 109.7887
+      },
+      null,
+      {
+        "v": "jo",
+        "start_s": 109.7887,
+        "end_s": 110.0687
+      },
+      {
+        "v": "u",
+        "start_s": 110.0687,
+        "end_s": 110.2888
+      },
+      {
+        "v": "do",
+        "start_s": 110.2888,
+        "end_s": 110.4888
+      },
+      {
+        "v": "u",
+        "start_s": 110.4888,
+        "end_s": 110.6688
+      },
+      null,
+      {
+        "v": "sho",
+        "start_s": 110.6888,
+        "end_s": 111.0888
+      },
+      {
+        "v": "u",
+        "start_s": 111.0888,
+        "end_s": 111.1688
+      },
+      {
+        "v": "so",
+        "start_s": 111.1688,
+        "end_s": 111.4288
+      },
+      {
+        "v": "u",
+        "start_s": 111.4288,
+        "end_s": 111.5889
+      },
+      null,
+      {
+        "v": "sa",
+        "start_s": 111.5889,
+        "end_s": 111.9489
+      },
+      {
+        "v": "i",
+        "start_s": 111.9489,
+        "end_s": 112.1089
+      },
+      {
+        "v": "shu",
+        "start_s": 112.1089,
+        "end_s": 112.6089
+      },
+      {
+        "v": "u",
+        "start_s": 112.6289,
+        "end_s": 112.6489
+      },
+      null,
+      {
+        "v": "re",
+        "start_s": 112.6489,
+        "end_s": 112.969
+      },
+      {
+        "v": "s",
+        "start_s": 112.969,
+        "end_s": 112.989
+      },
+      {
+        "v": "sha",
+        "start_s": 113.009,
+        "end_s": 113.349
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 113.349,
+        "end_s": 114.009
+      },
+      null,
+      {
+        "v": "o",
+        "start_s": 114.029,
+        "end_s": 114.0691
+      },
+      {
+        "v": "to",
+        "start_s": 114.0691,
+        "end_s": 115.1691
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 116.3292,
+        "end_s": 116.8293
+      },
+      {
+        "v": "n",
+        "start_s": 116.8293,
+        "end_s": 117.0093
+      },
+      null,
+      {
+        "v": "do",
+        "start_s": 117.0093,
+        "end_s": 117.2893
+      },
+      null,
+      {
+        "v": "de",
+        "start_s": 117.2893,
+        "end_s": 117.6093
+      },
+      null,
+      {
+        "v": "mo",
+        "start_s": 117.6093,
+        "end_s": 118.1094
+      },
+      null,
+      {
+        "v": "ko",
+        "start_s": 118.2494,
+        "end_s": 118.4094
+      },
+      {
+        "v": "to",
+        "start_s": 118.4094,
+        "end_s": 118.5694
+      },
+      {
+        "v": "ba",
+        "start_s": 118.5694,
+        "end_s": 118.9494
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 118.9494,
+        "end_s": 119.1695
+      },
+      null,
+      {
+        "v": "shi",
+        "start_s": 119.1695,
+        "end_s": 119.3295
+      },
+      {
+        "v": "te",
+        "start_s": 119.3295,
+        "end_s": 119.6695
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 119.6695,
+        "end_s": 119.8495
+      },
+      {
+        "v": "mi",
+        "start_s": 119.8495,
+        "end_s": 119.9895
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 119.9895,
+        "end_s": 120.2495
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 120.2495,
+        "end_s": 120.4696
+      },
+      {
+        "v": "bu",
+        "start_s": 120.4696,
+        "end_s": 120.5896
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 120.5896,
+        "end_s": 120.8696
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 120.9496,
+        "end_s": 121.1096
+      },
+      {
+        "v": "mi",
+        "start_s": 121.1096,
+        "end_s": 121.2696
+      },
+      {
+        "v": "ma",
+        "start_s": 121.2696,
+        "end_s": 121.3896
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 121.3896,
+        "end_s": 121.5496
+      },
+      null,
+      {
+        "v": "e",
+        "start_s": 121.5496,
+        "end_s": 121.7297
+      },
+      {
+        "v": "ra",
+        "start_s": 121.7297,
+        "end_s": 121.8697
+      },
+      {
+        "v": "bi",
+        "start_s": 121.8697,
+        "end_s": 122.2897
+      },
+      null,
+      {
+        "v": "mo",
+        "start_s": 122.2897,
+        "end_s": 122.4897
+      },
+      {
+        "v": "u",
+        "start_s": 122.4897,
+        "end_s": 122.5897
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 122.5897,
+        "end_s": 122.9298
+      },
+      {
+        "v": "chi",
+        "start_s": 122.9298,
+        "end_s": 123.1298
+      },
+      null,
+      {
+        "v": "do",
+        "start_s": 123.1298,
+        "end_s": 125.89
+      },
+      null,
+      {
+        "v": "mo",
+        "start_s": 126.31,
+        "end_s": 126.6901
+      },
+      {
+        "v": "u",
+        "start_s": 126.6901,
+        "end_s": 126.9301
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 126.9301,
+        "end_s": 127.3101
+      },
+      null,
+      {
+        "v": "do",
+        "start_s": 127.3101,
+        "end_s": 127.6101
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 127.6101,
+        "end_s": 128.1102
+      },
+      null,
+      {
+        "v": "ka",
+        "start_s": 128.2302,
+        "end_s": 128.4102
+      },
+      {
+        "v": "na",
+        "start_s": 128.4102,
+        "end_s": 128.5702
+      },
+      {
+        "v": "shi",
+        "start_s": 128.5702,
+        "end_s": 129.4903
+      },
+      {
+        "v": "ma",
+        "start_s": 129.4903,
+        "end_s": 129.6703
+      },
+      {
+        "v": "zu",
+        "start_s": 129.6703,
+        "end_s": 129.8103
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 129.8103,
+        "end_s": 131.1504
+      },
+      null,
+      {
+        "v": "su",
+        "start_s": 132.2105,
+        "end_s": 132.6305
+      },
+      {
+        "v": "mu",
+        "start_s": 132.6305,
+        "end_s": 132.8905
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 132.8905,
+        "end_s": 133.2706
+      },
+      {
+        "v": "u",
+        "start_s": 133.2706,
+        "end_s": 133.4906
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 133.4906,
+        "end_s": 134.3107
+      },
+      null,
+      {
+        "v": "ha",
+        "start_s": 143.2314,
+        "end_s": 143.4314
+      },
+      {
+        "v": "t",
+        "start_s": 143.4314,
+        "end_s": 143.4514
+      },
+      {
+        "v": "to",
+        "start_s": 143.4714,
+        "end_s": 143.7114
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 143.7114,
+        "end_s": 143.8714
+      },
+      {
+        "v": "ki",
+        "start_s": 143.8714,
+        "end_s": 144.1514
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 144.1514,
+        "end_s": 144.4515
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 144.4515,
+        "end_s": 144.6715
+      },
+      {
+        "v": "me",
+        "start_s": 144.6715,
+        "end_s": 144.9715
+      },
+      {
+        "v": "ba",
+        "start_s": 144.9715,
+        "end_s": 145.4315
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 145.7116,
+        "end_s": 145.8916
+      },
+      {
+        "v": "e",
+        "start_s": 145.8916,
+        "end_s": 146.0516
+      },
+      {
+        "v": "cha",
+        "start_s": 146.0516,
+        "end_s": 146.1916
+      },
+      {
+        "v": "i",
+        "start_s": 146.1916,
+        "end_s": 146.3716
+      },
+      null,
+      {
+        "v": "so",
+        "start_s": 146.3716,
+        "end_s": 146.5516
+      },
+      {
+        "v": "u",
+        "start_s": 146.5516,
+        "end_s": 146.6716
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 146.6716,
+        "end_s": 146.8717
+      },
+      null,
+      {
+        "v": "hi",
+        "start_s": 146.8717,
+        "end_s": 146.9917
+      },
+      {
+        "v": "ka",
+        "start_s": 146.9917,
+        "end_s": 147.1917
+      },
+      {
+        "v": "ri",
+        "start_s": 147.1917,
+        "end_s": 147.4717
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 147.4717,
+        "end_s": 147.9317
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 148.2318,
+        "end_s": 148.4518
+      },
+      {
+        "v": "t",
+        "start_s": 148.4518,
+        "end_s": 148.4918
+      },
+      {
+        "v": "to",
+        "start_s": 148.5118,
+        "end_s": 148.6918
+      },
+      null,
+      {
+        "v": "ma",
+        "start_s": 148.6918,
+        "end_s": 148.8918
+      },
+      {
+        "v": "da",
+        "start_s": 148.8918,
+        "end_s": 149.3118
+      },
+      null,
+      {
+        "v": "mu",
+        "start_s": 149.4519,
+        "end_s": 149.6719
+      },
+      {
+        "v": "ne",
+        "start_s": 149.6719,
+        "end_s": 149.9119
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 149.9119,
+        "end_s": 150.2119
+      },
+      null,
+      {
+        "v": "su",
+        "start_s": 150.2119,
+        "end_s": 150.612
+      },
+      {
+        "v": "n",
+        "start_s": 150.612,
+        "end_s": 150.772
+      },
+      {
+        "v": "de",
+        "start_s": 150.772,
+        "end_s": 150.912
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 150.912,
+        "end_s": 151.092
+      },
+      {
+        "v": "ta",
+        "start_s": 151.092,
+        "end_s": 152.3921
+      },
+      null,
+      {
+        "v": "te",
+        "start_s": 153.2322,
+        "end_s": 153.3922
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 153.3922,
+        "end_s": 153.5522
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 153.5522,
+        "end_s": 153.7122
+      },
+      {
+        "v": "ba",
+        "start_s": 153.7122,
+        "end_s": 153.8922
+      },
+      {
+        "v": "se",
+        "start_s": 153.8922,
+        "end_s": 154.1922
+      },
+      {
+        "v": "ba",
+        "start_s": 154.1922,
+        "end_s": 154.4523
+      },
+      null,
+      {
+        "v": "fu",
+        "start_s": 154.4523,
+        "end_s": 154.6523
+      },
+      {
+        "v": "re",
+        "start_s": 154.6523,
+        "end_s": 154.9523
+      },
+      {
+        "v": "ta",
+        "start_s": 154.9523,
+        "end_s": 155.4323
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 155.7524,
+        "end_s": 156.0324
+      },
+      {
+        "v": "ta",
+        "start_s": 156.0324,
+        "end_s": 156.2324
+      },
+      {
+        "v": "ta",
+        "start_s": 156.2324,
+        "end_s": 156.2724
+      },
+      {
+        "v": "ka",
+        "start_s": 156.2724,
+        "end_s": 156.3924
+      },
+      {
+        "v": "i",
+        "start_s": 156.3924,
+        "end_s": 156.6724
+      },
+      null,
+      {
+        "v": "mi",
+        "start_s": 156.6724,
+        "end_s": 157.0325
+      },
+      {
+        "v": "ra",
+        "start_s": 157.0325,
+        "end_s": 157.1925
+      },
+      {
+        "v": "i",
+        "start_s": 157.1925,
+        "end_s": 157.3925
+      },
+      null,
+      {
+        "v": "wa",
+        "start_s": 157.3925,
+        "end_s": 157.9725
+      },
+      null,
+      {
+        "v": "hi",
+        "start_s": 158.2526,
+        "end_s": 158.3926
+      },
+      {
+        "v": "so",
+        "start_s": 158.3926,
+        "end_s": 158.5926
+      },
+      {
+        "v": "ka",
+        "start_s": 158.5926,
+        "end_s": 158.7126
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 158.7126,
+        "end_s": 158.8726
+      },
+      null,
+      {
+        "v": "fu",
+        "start_s": 158.8726,
+        "end_s": 159.4927
+      },
+      {
+        "v": "ta",
+        "start_s": 159.4927,
+        "end_s": 160.1127
+      },
+      {
+        "v": "ri",
+        "start_s": 160.1127,
+        "end_s": 160.3527
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 160.3527,
+        "end_s": 160.7128
+      },
+      null,
+      {
+        "v": "mi",
+        "start_s": 160.7128,
+        "end_s": 161.0528
+      },
+      {
+        "v": "te",
+        "start_s": 161.0528,
+        "end_s": 161.4528
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 161.4528,
+        "end_s": 161.6728
+      },
+      {
+        "v": "ta",
+        "start_s": 161.6728,
+        "end_s": 163.233
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 164.273,
+        "end_s": 164.6131
+      },
+      null,
+      {
+        "v": "ha",
+        "start_s": 164.6131,
+        "end_s": 164.8131
+      },
+      {
+        "v": "na",
+        "start_s": 164.8131,
+        "end_s": 164.9931
+      },
+      {
+        "v": "bi",
+        "start_s": 164.9931,
+        "end_s": 165.1131
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 165.1131,
+        "end_s": 166.7132
+      }
+    ]
+  },
+  {
+    "line": 5,
+    "raw": "yoru ni saita",
+    "n_syllables": 6,
+    "start_s": 166.7132,
+    "end_s": 169.2334,
+    "syllables": [
+      {
+        "v": "yo",
+        "start_s": 166.7132,
+        "end_s": 166.9933
+      },
+      {
+        "v": "ru",
+        "start_s": 166.9933,
+        "end_s": 167.1133
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 167.1133,
+        "end_s": 167.6933
+      },
+      null,
+      {
+        "v": "sa",
+        "start_s": 167.6933,
+        "end_s": 168.3534
+      },
+      {
+        "v": "i",
+        "start_s": 168.3534,
+        "end_s": 168.9134
+      },
+      {
+        "v": "ta",
+        "start_s": 168.9134,
+        "end_s": 169.2334
+      }
+    ]
+  },
+  {
+    "line": 6,
+    "raw": "yoru ni saite",
+    "n_syllables": 6,
+    "start_s": 169.2334,
+    "end_s": 170.5335,
+    "syllables": [
+      {
+        "v": "yo",
+        "start_s": 169.2334,
+        "end_s": 169.5135
+      },
+      {
+        "v": "ru",
+        "start_s": 169.5135,
+        "end_s": 169.6135
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 169.6135,
+        "end_s": 169.8135
+      },
+      null,
+      {
+        "v": "sa",
+        "start_s": 169.8135,
+        "end_s": 169.9935
+      },
+      {
+        "v": "i",
+        "start_s": 169.9935,
+        "end_s": 170.1535
+      },
+      {
+        "v": "te",
+        "start_s": 170.1535,
+        "end_s": 170.5335
+      }
+    ]
+  },
+  {
+    "line": 7,
+    "raw": "shizuka ni kieta",
+    "n_syllables": 7,
+    "start_s": 170.5335,
+    "end_s": 175.1539,
+    "syllables": [
+      {
+        "v": "shi",
+        "start_s": 170.5335,
+        "end_s": 170.5935
+      },
+      {
+        "v": "zu",
+        "start_s": 170.5935,
+        "end_s": 170.8336
+      },
+      {
+        "v": "ka",
+        "start_s": 170.8336,
+        "end_s": 170.8736
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 170.8736,
+        "end_s": 172.0137
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 172.0137,
+        "end_s": 172.4737
+      },
+      {
+        "v": "e",
+        "start_s": 172.4737,
+        "end_s": 173.8938
+      },
+      {
+        "v": "ta",
+        "start_s": 173.8938,
+        "end_s": 175.1539
+      }
+    ]
+  },
+  {
+    "line": 8,
+    "raw": "hanasanaide",
+    "n_syllables": 6,
+    "start_s": 175.4339,
+    "end_s": 176.674,
+    "syllables": [
+      {
+        "v": "ha",
+        "start_s": 175.4339,
+        "end_s": 175.794
+      },
+      {
+        "v": "na",
+        "start_s": 175.794,
+        "end_s": 175.894
+      },
+      {
+        "v": "sa",
+        "start_s": 175.894,
+        "end_s": 175.994
+      },
+      {
+        "v": "na",
+        "start_s": 175.994,
+        "end_s": 176.234
+      },
+      {
+        "v": "i",
+        "start_s": 176.234,
+        "end_s": 176.454
+      },
+      {
+        "v": "de",
+        "start_s": 176.454,
+        "end_s": 176.674
+      }
+    ]
+  },
+  {
+    "line": 9,
+    "raw": "mou sukoshi dake",
+    "n_syllables": 7,
+    "start_s": 176.674,
+    "end_s": 179.1542,
+    "syllables": [
+      {
+        "v": "mo",
+        "start_s": 176.674,
+        "end_s": 176.854
+      },
+      {
+        "v": "u",
+        "start_s": 176.854,
+        "end_s": 177.2141
+      },
+      null,
+      {
+        "v": "su",
+        "start_s": 177.2141,
+        "end_s": 177.4741
+      },
+      {
+        "v": "ko",
+        "start_s": 177.4741,
+        "end_s": 178.2141
+      },
+      {
+        "v": "shi",
+        "start_s": 178.2141,
+        "end_s": 178.6942
+      },
+      null,
+      {
+        "v": "da",
+        "start_s": 178.6942,
+        "end_s": 178.8942
+      },
+      {
+        "v": "ke",
+        "start_s": 178.8942,
+        "end_s": 179.1542
+      }
+    ]
+  },
+  {
+    "line": 10,
+    "raw": "mou sukoshi dake",
+    "n_syllables": 7,
+    "start_s": 179.1542,
+    "end_s": 180.4143,
+    "syllables": [
+      {
+        "v": "mo",
+        "start_s": 179.1542,
+        "end_s": 179.3342
+      },
+      {
+        "v": "u",
+        "start_s": 179.3342,
+        "end_s": 179.4942
+      },
+      null,
+      {
+        "v": "su",
+        "start_s": 179.4942,
+        "end_s": 179.6543
+      },
+      {
+        "v": "ko",
+        "start_s": 179.6543,
+        "end_s": 179.8143
+      },
+      {
+        "v": "shi",
+        "start_s": 179.8143,
+        "end_s": 179.9343
+      },
+      null,
+      {
+        "v": "da",
+        "start_s": 179.9343,
+        "end_s": 180.1343
+      },
+      {
+        "v": "ke",
+        "start_s": 180.1343,
+        "end_s": 180.4143
+      }
+    ]
+  },
+  {
+    "line": 11,
+    "raw": "kono mama de ano hi miwatashita nagisa wo ima mo omoidasu n da suna no ue ni kizanda kotobakun no ushirosugata pat to hikatte saita hanabi wo miteta kitto mada owaranai natsu ga aimai na kokoro wo",
+    "n_syllables": 88,
+    "start_s": 180.4143,
+    "end_s": 225.5179,
+    "syllables": [
+      {
+        "v": "ko",
+        "start_s": 180.4143,
+        "end_s": 180.6343
+      },
+      {
+        "v": "no",
+        "start_s": 180.6343,
+        "end_s": 180.7543
+      },
+      null,
+      {
+        "v": "ma",
+        "start_s": 180.7543,
+        "end_s": 181.0744
+      },
+      {
+        "v": "ma",
+        "start_s": 181.0744,
+        "end_s": 181.5744
+      },
+      null,
+      {
+        "v": "de",
+        "start_s": 181.5744,
+        "end_s": 183.0145
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 193.2753,
+        "end_s": 193.5954
+      },
+      {
+        "v": "no",
+        "start_s": 193.5954,
+        "end_s": 193.8154
+      },
+      null,
+      {
+        "v": "hi",
+        "start_s": 193.8154,
+        "end_s": 194.3954
+      },
+      null,
+      {
+        "v": "mi",
+        "start_s": 194.3954,
+        "end_s": 194.8355
+      },
+      {
+        "v": "wa",
+        "start_s": 194.8355,
+        "end_s": 195.4155
+      },
+      {
+        "v": "ta",
+        "start_s": 195.4155,
+        "end_s": 195.6955
+      },
+      {
+        "v": "shi",
+        "start_s": 195.6955,
+        "end_s": 196.0556
+      },
+      {
+        "v": "ta",
+        "start_s": 196.0556,
+        "end_s": 196.3156
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 196.3156,
+        "end_s": 196.6956
+      },
+      {
+        "v": "gi",
+        "start_s": 196.6956,
+        "end_s": 196.9756
+      },
+      {
+        "v": "sa",
+        "start_s": 196.9756,
+        "end_s": 197.2757
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 197.2757,
+        "end_s": 197.8157
+      },
+      null,
+      {
+        "v": "i",
+        "start_s": 198.2157,
+        "end_s": 198.5558
+      },
+      {
+        "v": "ma",
+        "start_s": 198.5558,
+        "end_s": 198.8158
+      },
+      null,
+      {
+        "v": "mo",
+        "start_s": 198.8158,
+        "end_s": 199.3558
+      },
+      null,
+      {
+        "v": "o",
+        "start_s": 199.3758,
+        "end_s": 199.4758
+      },
+      {
+        "v": "mo",
+        "start_s": 199.4758,
+        "end_s": 199.8759
+      },
+      {
+        "v": "i",
+        "start_s": 199.8759,
+        "end_s": 200.1559
+      },
+      {
+        "v": "da",
+        "start_s": 200.1559,
+        "end_s": 200.4159
+      },
+      {
+        "v": "su",
+        "start_s": 200.4159,
+        "end_s": 200.8359
+      },
+      null,
+      {
+        "v": "n",
+        "start_s": 200.8359,
+        "end_s": 201.076
+      },
+      null,
+      {
+        "v": "da",
+        "start_s": 201.076,
+        "end_s": 202.116
+      },
+      null,
+      {
+        "v": "su",
+        "start_s": 203.2161,
+        "end_s": 203.5762
+      },
+      {
+        "v": "na",
+        "start_s": 203.5762,
+        "end_s": 203.8562
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 203.8562,
+        "end_s": 204.3362
+      },
+      null,
+      {
+        "v": "u",
+        "start_s": 204.3362,
+        "end_s": 204.5362
+      },
+      {
+        "v": "e",
+        "start_s": 204.5362,
+        "end_s": 204.7562
+      },
+      null,
+      {
+        "v": "ni",
+        "start_s": 204.7562,
+        "end_s": 205.3363
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 205.3363,
+        "end_s": 205.6963
+      },
+      {
+        "v": "za",
+        "start_s": 205.6963,
+        "end_s": 206.0364
+      },
+      {
+        "v": "n",
+        "start_s": 206.0364,
+        "end_s": 206.3764
+      },
+      {
+        "v": "da",
+        "start_s": 206.3764,
+        "end_s": 206.6164
+      },
+      null,
+      {
+        "v": "ko",
+        "start_s": 206.6164,
+        "end_s": 206.9764
+      },
+      {
+        "v": "to",
+        "start_s": 206.9764,
+        "end_s": 207.3165
+      },
+      {
+        "v": "ba",
+        "start_s": 207.3165,
+        "end_s": 207.7565
+      },
+      {
+        "v": "ku",
+        "start_s": 208.2165,
+        "end_s": 208.5766
+      },
+      {
+        "v": "n",
+        "start_s": 208.5966,
+        "end_s": 208.6166
+      },
+      null,
+      {
+        "v": "no",
+        "start_s": 208.6566,
+        "end_s": 209.2566
+      },
+      null,
+      {
+        "v": "u",
+        "start_s": 209.2566,
+        "end_s": 209.4766
+      },
+      {
+        "v": "shi",
+        "start_s": 209.4766,
+        "end_s": 210.1167
+      },
+      {
+        "v": "ro",
+        "start_s": 210.1167,
+        "end_s": 210.3567
+      },
+      {
+        "v": "su",
+        "start_s": 210.3567,
+        "end_s": 210.7567
+      },
+      {
+        "v": "ga",
+        "start_s": 210.7567,
+        "end_s": 211.0768
+      },
+      {
+        "v": "ta",
+        "start_s": 211.0768,
+        "end_s": 211.9568
+      },
+      null,
+      {
+        "v": "pa",
+        "start_s": 213.2369,
+        "end_s": 213.4369
+      },
+      {
+        "v": "t",
+        "start_s": 213.4369,
+        "end_s": 213.4569
+      },
+      null,
+      {
+        "v": "to",
+        "start_s": 213.4769,
+        "end_s": 213.697
+      },
+      null,
+      {
+        "v": "hi",
+        "start_s": 213.697,
+        "end_s": 213.877
+      },
+      {
+        "v": "ka",
+        "start_s": 213.877,
+        "end_s": 214.117
+      },
+      {
+        "v": "t",
+        "start_s": 214.117,
+        "end_s": 214.157
+      },
+      {
+        "v": "te",
+        "start_s": 214.177,
+        "end_s": 214.437
+      },
+      null,
+      {
+        "v": "sa",
+        "start_s": 214.437,
+        "end_s": 214.697
+      },
+      {
+        "v": "i",
+        "start_s": 214.697,
+        "end_s": 214.9771
+      },
+      {
+        "v": "ta",
+        "start_s": 214.9771,
+        "end_s": 215.5171
+      },
+      null,
+      {
+        "v": "ha",
+        "start_s": 215.7371,
+        "end_s": 216.0771
+      },
+      {
+        "v": "na",
+        "start_s": 216.0771,
+        "end_s": 216.2372
+      },
+      {
+        "v": "bi",
+        "start_s": 216.2372,
+        "end_s": 216.3772
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 216.3772,
+        "end_s": 216.6572
+      },
+      null,
+      {
+        "v": "mi",
+        "start_s": 216.6572,
+        "end_s": 216.9972
+      },
+      {
+        "v": "te",
+        "start_s": 216.9972,
+        "end_s": 217.1972
+      },
+      {
+        "v": "ta",
+        "start_s": 217.1972,
+        "end_s": 217.9573
+      },
+      null,
+      {
+        "v": "ki",
+        "start_s": 218.2773,
+        "end_s": 218.4773
+      },
+      {
+        "v": "t",
+        "start_s": 218.4773,
+        "end_s": 218.5173
+      },
+      {
+        "v": "to",
+        "start_s": 218.5373,
+        "end_s": 218.7174
+      },
+      null,
+      {
+        "v": "ma",
+        "start_s": 218.7174,
+        "end_s": 218.8974
+      },
+      {
+        "v": "da",
+        "start_s": 218.8974,
+        "end_s": 219.3374
+      },
+      null,
+      {
+        "v": "o",
+        "start_s": 219.4774,
+        "end_s": 219.6774
+      },
+      {
+        "v": "wa",
+        "start_s": 219.6774,
+        "end_s": 219.9575
+      },
+      {
+        "v": "ra",
+        "start_s": 219.9575,
+        "end_s": 220.2775
+      },
+      {
+        "v": "na",
+        "start_s": 220.2775,
+        "end_s": 220.5775
+      },
+      {
+        "v": "i",
+        "start_s": 220.5775,
+        "end_s": 220.7375
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 220.7375,
+        "end_s": 220.9575
+      },
+      {
+        "v": "tsu",
+        "start_s": 220.9575,
+        "end_s": 221.0975
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 221.0975,
+        "end_s": 222.3576
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 223.2577,
+        "end_s": 223.4177
+      },
+      {
+        "v": "i",
+        "start_s": 223.4177,
+        "end_s": 223.5977
+      },
+      {
+        "v": "ma",
+        "start_s": 223.5977,
+        "end_s": 223.7178
+      },
+      {
+        "v": "i",
+        "start_s": 223.7178,
+        "end_s": 223.8778
+      },
+      null,
+      {
+        "v": "na",
+        "start_s": 223.8778,
+        "end_s": 224.1578
+      },
+      null,
+      {
+        "v": "ko",
+        "start_s": 224.1578,
+        "end_s": 224.5178
+      },
+      {
+        "v": "ko",
+        "start_s": 224.5178,
+        "end_s": 224.6778
+      },
+      {
+        "v": "ro",
+        "start_s": 224.6778,
+        "end_s": 224.9178
+      },
+      null,
+      {
+        "v": "wo",
+        "start_s": 224.9178,
+        "end_s": 225.5179
+      }
+    ]
+  },
+  {
+    "line": 12,
+    "raw": "tokashite tsunaida",
+    "n_syllables": 8,
+    "start_s": 225.7379,
+    "end_s": 227.9181,
+    "syllables": [
+      {
+        "v": "to",
+        "start_s": 225.7379,
+        "end_s": 226.0579
+      },
+      {
+        "v": "ka",
+        "start_s": 226.0579,
+        "end_s": 226.218
+      },
+      {
+        "v": "shi",
+        "start_s": 226.218,
+        "end_s": 226.378
+      },
+      {
+        "v": "te",
+        "start_s": 226.378,
+        "end_s": 226.638
+      },
+      null,
+      {
+        "v": "tsu",
+        "start_s": 226.638,
+        "end_s": 226.978
+      },
+      {
+        "v": "na",
+        "start_s": 226.978,
+        "end_s": 227.178
+      },
+      {
+        "v": "i",
+        "start_s": 227.178,
+        "end_s": 227.4781
+      },
+      {
+        "v": "da",
+        "start_s": 227.4781,
+        "end_s": 227.9181
+      }
+    ]
+  },
+  {
+    "line": 13,
+    "raw": "kono yoru ga tsuzuite hoshikatta aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa goshichou arigatou gozaimashita",
+    "n_syllables": 83,
+    "start_s": 228.2781,
+    "end_s": 298.2237,
+    "syllables": [
+      {
+        "v": "ko",
+        "start_s": 228.2781,
+        "end_s": 228.4581
+      },
+      {
+        "v": "no",
+        "start_s": 228.4581,
+        "end_s": 228.5581
+      },
+      null,
+      {
+        "v": "yo",
+        "start_s": 228.5581,
+        "end_s": 228.7182
+      },
+      {
+        "v": "ru",
+        "start_s": 228.7182,
+        "end_s": 228.8382
+      },
+      null,
+      {
+        "v": "ga",
+        "start_s": 228.8382,
+        "end_s": 229.2982
+      },
+      null,
+      {
+        "v": "tsu",
+        "start_s": 229.2982,
+        "end_s": 229.4982
+      },
+      {
+        "v": "zu",
+        "start_s": 229.4982,
+        "end_s": 229.8982
+      },
+      {
+        "v": "i",
+        "start_s": 229.8982,
+        "end_s": 230.1583
+      },
+      {
+        "v": "te",
+        "start_s": 230.1583,
+        "end_s": 230.3583
+      },
+      null,
+      {
+        "v": "ho",
+        "start_s": 230.3583,
+        "end_s": 230.7183
+      },
+      {
+        "v": "shi",
+        "start_s": 230.7183,
+        "end_s": 231.0583
+      },
+      {
+        "v": "ka",
+        "start_s": 231.0583,
+        "end_s": 231.4784
+      },
+      {
+        "v": "t",
+        "start_s": 231.4784,
+        "end_s": 231.7184
+      },
+      {
+        "v": "ta",
+        "start_s": 231.7384,
+        "end_s": 233.1385
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 234.0386,
+        "end_s": 235.1387
+      },
+      {
+        "v": "a",
+        "start_s": 235.2587,
+        "end_s": 235.6387
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 235.9187,
+        "end_s": 236.3388
+      },
+      {
+        "v": "a",
+        "start_s": 236.5388,
+        "end_s": 236.8188
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 237.0988,
+        "end_s": 237.6389
+      },
+      {
+        "v": "a",
+        "start_s": 237.7589,
+        "end_s": 238.0989
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 238.3989,
+        "end_s": 238.7789
+      },
+      {
+        "v": "a",
+        "start_s": 238.999,
+        "end_s": 239.379
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 239.619,
+        "end_s": 240.1391
+      },
+      {
+        "v": "a",
+        "start_s": 240.2591,
+        "end_s": 240.6391
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 240.8391,
+        "end_s": 241.2791
+      },
+      {
+        "v": "a",
+        "start_s": 241.6592,
+        "end_s": 242.3192
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 243.9794,
+        "end_s": 245.1195
+      },
+      {
+        "v": "a",
+        "start_s": 245.2595,
+        "end_s": 245.6395
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 245.9195,
+        "end_s": 246.3395
+      },
+      {
+        "v": "a",
+        "start_s": 246.5196,
+        "end_s": 246.8396
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 247.0796,
+        "end_s": 247.6397
+      },
+      {
+        "v": "a",
+        "start_s": 247.7597,
+        "end_s": 248.1197
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 248.4397,
+        "end_s": 248.7797
+      },
+      {
+        "v": "a",
+        "start_s": 249.0798,
+        "end_s": 249.5998
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 249.6198,
+        "end_s": 249.6598
+      },
+      {
+        "v": "a",
+        "start_s": 249.9198,
+        "end_s": 250.1799
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 250.2799,
+        "end_s": 250.7999
+      },
+      {
+        "v": "a",
+        "start_s": 251.0999,
+        "end_s": 251.48
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 251.5,
+        "end_s": 252.14
+      },
+      {
+        "v": "a",
+        "start_s": 252.16,
+        "end_s": 252.18
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 252.4,
+        "end_s": 252.7001
+      },
+      {
+        "v": "a",
+        "start_s": 252.8401,
+        "end_s": 253.5801
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 254.0402,
+        "end_s": 255.1202
+      },
+      {
+        "v": "a",
+        "start_s": 255.2603,
+        "end_s": 255.6603
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 255.9203,
+        "end_s": 256.3403
+      },
+      {
+        "v": "a",
+        "start_s": 256.5204,
+        "end_s": 256.8004
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 257.0804,
+        "end_s": 257.6404
+      },
+      {
+        "v": "a",
+        "start_s": 257.7205,
+        "end_s": 258.1405
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 258.3805,
+        "end_s": 258.8205
+      },
+      {
+        "v": "a",
+        "start_s": 258.9806,
+        "end_s": 259.0006
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 259.0206,
+        "end_s": 259.4006
+      },
+      {
+        "v": "a",
+        "start_s": 259.6206,
+        "end_s": 260.1606
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 260.2607,
+        "end_s": 260.6607
+      },
+      {
+        "v": "a",
+        "start_s": 260.8607,
+        "end_s": 261.3007
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 261.6408,
+        "end_s": 262.1608
+      },
+      {
+        "v": "a",
+        "start_s": 262.2208,
+        "end_s": 262.2408
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 264.021,
+        "end_s": 265.121
+      },
+      {
+        "v": "a",
+        "start_s": 265.2611,
+        "end_s": 265.6411
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 265.9211,
+        "end_s": 266.3411
+      },
+      {
+        "v": "a",
+        "start_s": 266.5412,
+        "end_s": 266.8412
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 267.0812,
+        "end_s": 267.6812
+      },
+      {
+        "v": "a",
+        "start_s": 267.7612,
+        "end_s": 268.1013
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 268.4013,
+        "end_s": 268.7813
+      },
+      {
+        "v": "a",
+        "start_s": 269.0414,
+        "end_s": 269.6614
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 269.9214,
+        "end_s": 270.1814
+      },
+      {
+        "v": "a",
+        "start_s": 270.3015,
+        "end_s": 270.8215
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 271.1415,
+        "end_s": 271.4415
+      },
+      {
+        "v": "a",
+        "start_s": 271.5215,
+        "end_s": 272.1616
+      },
+      null,
+      {
+        "v": "go",
+        "start_s": 272.2216,
+        "end_s": 272.2616
+      },
+      {
+        "v": "shi",
+        "start_s": 272.2616,
+        "end_s": 272.3216
+      },
+      {
+        "v": "cho",
+        "start_s": 272.3216,
+        "end_s": 272.3816
+      },
+      {
+        "v": "u",
+        "start_s": 272.3816,
+        "end_s": 272.4016
+      },
+      null,
+      {
+        "v": "a",
+        "start_s": 272.4016,
+        "end_s": 272.6816
+      },
+      {
+        "v": "ri",
+        "start_s": 272.6816,
+        "end_s": 272.8817
+      },
+      {
+        "v": "ga",
+        "start_s": 272.9017,
+        "end_s": 273.7417
+      },
+      {
+        "v": "to",
+        "start_s": 275.6419,
+        "end_s": 275.6819
+      },
+      {
+        "v": "u",
+        "start_s": 275.6819,
+        "end_s": 275.7019
+      },
+      null,
+      {
+        "v": "go",
+        "start_s": 275.7219,
+        "end_s": 275.7619
+      },
+      {
+        "v": "za",
+        "start_s": 275.8419,
+        "end_s": 275.9019
+      },
+      {
+        "v": "i",
+        "start_s": 276.0019,
+        "end_s": 276.0219
+      },
+      {
+        "v": "ma",
+        "start_s": 276.0219,
+        "end_s": 276.0619
+      },
+      {
+        "v": "shi",
+        "start_s": 297.4036,
+        "end_s": 298.1837
+      },
+      {
+        "v": "ta",
+        "start_s": 298.1837,
+        "end_s": 298.2237
+      }
+    ]
+  }
+]

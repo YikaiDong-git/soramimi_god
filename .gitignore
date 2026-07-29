@@ -1,0 +1,7 @@
+*.mp4
+*.wav
+*.flac
+*.ckpt
+*.part
+__pycache__/
+*.pyc

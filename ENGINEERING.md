@@ -292,7 +292,7 @@ ASS 卡拉OK的颜色语义**容易搞反**：
 ### 阶段 9 · 压制与 QC
 
 ```bash
-python burn.py cool_cyan
+python burn.py ice_rainbow --trim=2.85
 ```
 
 **始终压全片**，不做"只压一小段"的预览（见 §6.6）。
@@ -543,9 +543,9 @@ $PY transcribe_vocals.py            # 5. ASR + 罗马音
 $PY force_align.py                  # 6. 音节级强制对齐
 #    把空耳歌词放进 02_lyrics/soramimi_user.txt
 $PY soramimi_align.py               # 7. 子序列 DTW           ← 看 align_report.md
-$PY make_ass.py                     # 8. 基础字幕（3 配色）
-$PY render_effects.py               #    32 种特效样片        ← 人工挑
-$PY burn.py cool_cyan               # 9. 压制 + QC 抽帧       ← 人工看图
+$PY make_ass.py                     # 8. 字幕: 滚动扫光 + 逐字配色（默认路径）
+$PY render_effects.py               #    可选支路: 32 种逐字动画样片 ← 人工挑
+$PY burn.py ice_rainbow --trim=2.85 # 9. 压制 + QC 抽帧       ← 人工看图
 bash sync_to_server.sh              # 10. 交付
 ```
 

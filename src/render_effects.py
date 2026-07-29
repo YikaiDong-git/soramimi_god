@@ -35,7 +35,10 @@ FXDIR = SUBS / "fx"
 OUT = ROOT / "04_output" / "fx_samples"
 QC = ROOT / "05_qc" / "fx"
 FF = "C:/Users/59827/karaoke/tools/ffmpeg-shared71/bin/ffmpeg.exe"
-BASE = SUBS / "soramimi_cool_cyan.ass"
+# 样片以基础字幕为底 —— 只换动画, 分行与时间轴照抄。
+# 原先指向 soramimi_cool_cyan.ass, 那个配色随旧版 make_ass.py 一起退役,
+# 文件清掉之后这里会 FileNotFoundError。基础字幕改叫什么, 这里就跟着改。
+BASE = SUBS / "soramimi_ice_rainbow.ass"
 
 # 样片窗口 (秒) —— 覆盖第 11 行 (68.23-70.45s), 画面正好是烟花
 WIN_START, WIN_END = 66.5, 72.5

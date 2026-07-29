@@ -48,8 +48,16 @@
 | 6 | `force_align.py` | yohane 音节级强制对齐 → 浮点时间轴 | `python force_align.py` |
 | 7 | `phonetics.py` | 跨语言音素特征 + 距离（被 8 调用） | `python phonetics.py`（自检） |
 | 8 | `soramimi_align.py` | **子序列 DTW**：日文音节 → 空耳汉字 | `python soramimi_align.py` |
-| 9 | `make_ass.py` | 生成逐字卡拉OK `.ass`（3 配色） | `python make_ass.py` |
-| 10 | `burn.py` | libass 渲染 + NVENC 压制 + QC 抽帧 | `python burn.py ktv_yellow preview` |
+| 9 | `make_ass.py` | 滚动扫光 `\kf` + 逐字配色（6 方案，可分段） | `python make_ass.py 0-8:ice 9-:rainbow` |
+| 10 | `burn.py` | libass 渲染 + NVENC 压制 + QC 抽帧 | `python burn.py ice_rainbow --trim=2.85` |
+
+可选支路（逐字动画，默认不启用）：
+
+| 脚本 | 用途 | 用法 |
+|---|---|---|
+| `effects.py` | 32 种逐字动画的定义（库，不单独跑） | `python effects.py` 列表 |
+| `render_effects.py` | 为每种特效渲染一段样片供挑选 | `python render_effects.py` |
+| `make_mixed.py` | 按行段给不同特效换挡 | `python make_mixed.py` |
 
 所有脚本都用 `C:/Users/59827/karaoke/venv/Scripts/python.exe` 跑，且需要
 `PYTHONIOENCODING=utf-8`（否则 Windows 控制台 cp1252 会在打印中日文时崩）。

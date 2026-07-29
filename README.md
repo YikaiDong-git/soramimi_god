@@ -76,9 +76,17 @@ python transcribe_vocals.py          # ASR + 罗马音
 python force_align.py                # 音节级强制对齐
 # ... 空耳写进 02_lyrics/soramimi_user.txt
 python soramimi_align.py             # 子序列 DTW      ← 看 align_report.md
-python make_ass.py                   # 基础字幕
-python render_effects.py             # 32 种特效样片   ← 人工挑
-python burn.py cool_cyan             # 压制 + QC       ← 人工看图
+python make_ass.py                   # 字幕: 滚动扫光 + 逐字配色
+python burn.py ice_rainbow           # 压制 + QC       ← 人工看图
+```
+
+分段换配色、以及把默认的滚动扫光换成逐字动画，都是可选的：
+
+```bash
+python make_ass.py 0-8:ice 9-:rainbow   # 前 9 行寒冰, 之后彩虹（这也是默认方案）
+python make_ass.py 0-:fire              # 整首火焰; 6 种配色见 make_ass.py 的 SCHEMES
+python render_effects.py                # 可选支路: 32 种逐字动画样片 ← 人工挑
+python burn.py ice_rainbow --trim=2.85  # 顺手砍掉 UP 主自制片头
 ```
 
 环境搭建见 ENGINEERING.md §2（**安装顺序有讲究**，装反了 torch 会被静默降级成 CPU 版）。

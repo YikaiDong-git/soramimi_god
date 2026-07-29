@@ -31,7 +31,7 @@ from dataclasses import dataclass
 # 结果调用方一 print 就 ValueError: I/O operation on closed file。
 # 中文输出统一靠环境变量 PYTHONIOENCODING=utf-8 解决。
 
-# 未唱 / 已唱 / 描边 —— 与 make_ass.py 的 cool_cyan 一致
+# 未唱 / 已唱 / 描边 —— 与 make_ass.py 的 "cyan" 配色一致
 C_PRE = r"&H00FFFFFF&"
 C_HIT = r"&H00F0C000&"
 C_OUT = r"&H00301808&"

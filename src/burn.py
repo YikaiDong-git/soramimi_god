@@ -163,10 +163,18 @@ def main():
         suffix = f"{which}_notrailer"
         print(f"片头裁剪: -{trim:.2f}s   字幕已同步前移 -> 第 1 行 {lo-trim:.2f}s")
 
-    out = OUT / f"dashanghuahuo_soramimi_{suffix}.mp4"
+    # 成品**只写这一个固定路径**。曾经压到 dashanghuahuo_soramimi_<配色>.mp4, 而交付件
+    # 叫 FINAL_*, 两者不同名 —— 结果作者看的是上一版的 FINAL, 反馈的全是已经修好的问题,
+    # 白跑一轮。输出唯一化之后, 不存在"哪个文件是最新的"这个问题。
+    out = OUT / "FINAL_dashanghuahuo_full.mp4"
     if not burn(mv, ass, out, trim=trim):
         return 1
     print(f"\n成品: {out.name}  ({out.stat().st_size/1e6:.1f} MB)")
+
+    # 顺手切好 90s 交付版, 免得漏 (流拷贝, 不重编码)
+    clip = OUT / "FINAL_dashanghuahuo_90s.mp4"
+    if cut_clip(out, clip, 0, 90):
+        print(f"      {clip.name}  ({clip.stat().st_size/1e6:.1f} MB)")
 
     # QC 抽帧: 每行中点各一张。裁过片头的话时间要减掉裁剪量
     times = [round(l["start"] + (l["end"] - l["start"]) / 2 - trim, 2) for l in timed]

@@ -53,24 +53,49 @@ LEAD_OUT = 350                 # ms 期望的延后消失量
 GAP_SHARE = 0.40               # 每行最多吃掉间隔的 40%, 两行合计 80%, 留 20% 空隙
 FADE = 110                     # ms 淡入淡出
 
-# ---------------------------------------------------------------- 重点词
-# 空耳造出来的准词 (孤舵 / 此夜 / 果啊) 读者切不开 —— 汉字连写没有空格。
-# 分组边界**不在时间轴里** (实测行内相邻字 92% 缝隙 <= 1ms), 只能来自语义,
-# 所以由作者在 02_lyrics/soramimi_groups.txt 里标, 格式:  L03  孤舵=冷
+# ---------------------------------------------------------------- 标注
+# 汉字连写没有空格, 空耳造出来的准词读者切不开。分组边界**不在时间轴里**
+# (实测行内相邻字 92% 缝隙 <= 1ms), 只能来自语义, 由作者标在
+# 02_lyrics/soramimi_groups.txt 里。两种标注**互相独立**:
 #
-# 标了的词得到三件事: 两侧留白 / 整词同色 / 未唱时也带着这个色(只是暗)。
-LONG_SEC = 0.45                # 超过这个时长算"被拖长", 后面自动多留白
+#   B03  吾待|孤舵|罢      断点: 只在写了 | 的地方留白 (写片段即可, 按片段定位)
+#   C03  孤舵=冷           着色: 整词同色, 未唱时也带着这个色(只是暗)
+#
+# 曾经的做法是"标一个词 -> 两侧自动加空格 + 上色", 三件事绑死, 结果:
+#   (a) 为了保护"我的"不被自动规则劈开而标成词, 反而制造了"的|心"这个多余空格;
+#   (b) L9 只想要"瘩|当", 却得到"的|疙瘩|当年"两个空格。
+# 根子是把"分组"和"留白"绑死了。作者真正要表达的是**在哪里断开**(意群边界),
+# 不是"哪几个字算一个词" —— "已枯落的疙瘩"整体才是一个意群。
+# 另外原先还有一条"被拖长的字后面自动留白"的规则, 它不认识词, 全曲 18 处触发、
+# 劈开 4 个真词, **已整条删除** —— 空格只出现在作者明确标的位置。
 
 # ---------------------------------------------------------------- 扫光节奏
 # 日文音节时长极不均 (实测单字 0.02s ~ 1.16s, 中位 0.32s), 1:1 映射把这份不均
 # 原样继承 -> 有的字只有 \kf2 (2 厘秒), 等于瞬间弹出, 根本不是"刷"。
 # 修法: 给每个字的扫光时长设下限, 缺的时间从"超出下限的部分"按比例借, 整行总长不变。
 # **只抬下限, 不压上限** —— 长音的"拖住"是真实的节奏信号, 压掉就把节奏抹平了。
-MIN_WIPE = 0.14                # 单字最短扫光时长 (秒)
+# 0.14s 试过, **太低** —— 24fps 下只有 3.4 帧, 作者仍反映"瞬过"。
+# 实测各档代价 (被抬起字数 / 借走总量 / 最大单字压缩):
+#   0.14 -> 10 字 / 0.62s / 10%      0.22 -> 21 字 / 1.86s / 32%
+#   0.20 -> 17 字 / 1.44s / 24%      0.25 -> 35 字 / 2.77s / 47%  (削掉近半, 会失同步)
+# 取 0.22 (≈5.3 帧)。长音几乎不受影响: 最长的 1.16s 只掉到 1.07s。
+MIN_WIPE = 0.22                # 单字最短扫光时长 (秒)
+
+# ---------------------------------------------------------------- 扫光速度限幅
+# 每个字宽度一样但时长不同 -> 扫光**速度**不同。眼睛跟着光的前沿走, 前沿每过一个字
+# 就变一次速, 这就是"唐突/突然感"的物理来源。实测相邻字速度最大跳变 4.1 倍。
+#
+# 试过两条路 (同样把跳变压到 1.5x 时的"字被点亮 vs 该被唱到"的最大偏移):
+#   全局混合 (把每个字的时长往"按宽度匀速"拽)  -> 偏移 0.62s   ✗
+#   速度限幅 (只动跳变过大的相邻对)            -> 偏移 0.20s   ✓  差 3 倍
+# 限幅只削突变、不改整体形状 (动画与控制系统里的 slew rate limiting), 所以代价小得多。
+# 完全匀速 (跳变 1.0x) 的偏移达 0.88s —— 光和人声脱节近一秒, 不可取。
+#
+# 取 1.7: 跳变 4.1x -> 1.7x, 偏移仅 0.17s。0 或 None 关闭。
+WIPE_LIMIT = 1.7
 GAP_MAX_SEC = 0.05             # 留白最多占走多少扫光时间 —— 光走在空白里是"看不见"的,
                                # 不封顶的话短字会被留白偷走大半时间, 显得更快
-GAP_WORD = 30                  # 重点词两侧留白 px
-GAP_LONG = 26                  # 被拖长的字后面再多留 px
+GAP_BREAK = 34                 # 一个断点留多少 px 白
 SPACE_ADV = 68.6               # 实测: 一个 \h 有 68.6px, 比汉字(61.1px)还宽
 GLYPH_W = 61.1                 # 实测: Microsoft YaHei @78 的全角字宽
 
@@ -80,12 +105,26 @@ TEMP = {                       # 温度色板, 作者按词的"感觉"挑。ASS 
     "绿": "&H0096E696&",
 }
 
-# 词下划线 —— 作者定为"存着备用, 本作品不启用"。命令行 --underline 打开。
+# 词下划线 —— 标注 `U15  果啊`。位置在**文字下方**, 与声乐谱的惯例一致
+# (连接歌词音节的记号画在文字基线下; 上方那条是给音符用的连音线)。
+#
 # 实现必须用 ASS 内建的 \u1/\u0, 绝不自己算 x 坐标:
 #   试过 PyonFX 量 (它忽略内联 \fscx -> 线整体左移并逐组右漂) 和自己解析建模
 #   (整行比实际宽约 80px), 两条路都是在猜渲染器的行为, 都对不齐。
 #   \u1 由渲染器自己排, 跟着字走, 不可能错。见 ENGINEERING.md §6.16。
-UNDERLINE = False
+#
+# 但 \u1 的线色**跟随填充色**, 没法单独指定成深色。所以单独画一层:
+# 同一行再排一遍, 只有目标词可见(深色 + \u1), 其余字全透明, 放在正文层**下面** ——
+# 线露在字的下方, 而深色字身被上层同位置的正文完全盖住。
+# 颜色注意两点 (都踩过):
+#   (1) \1c 只吃 6 位十六进制 &HBBGGRR&, 写成 8 位 (带 alpha) 解析不对, 透明度要用 \1a;
+#   (2) 纯深色的线在暗背景的镜头上等于隐形 —— 乐谱是黑墨白纸, 视频不是。
+#       所以照正文的思路反过来做: 深色线 + 一圈浅色细描边, 明暗背景都看得见。
+C_ULINE = r"&H303030&"         # 线本身: 偏黑
+C_ULINE_EDGE = r"&HF0F0F0&"    # 细描边: 浅色, 保证在暗背景上也分得出来
+ULINE_DROP = 11                # 下划线层比正文低多少 px (靠 Dialogue 的 MarginV 实现)
+ULINE_H = 5                    # 线粗 px
+SPACING = 2                    # 与 Style 里的 Spacing 一致 —— 算线长要用
 
 
 # ---------------------------------------------------------------- 配色方案
@@ -162,35 +201,82 @@ def scheme_for(idx, plan):
     return plan[-1][2]
 
 
-def load_words(li, chars):
-    """读作者标注的重点词, 返回 [(首字下标, 末字下标, 颜色 or None), ...]。
+def _display(chars):
+    """行的显示串 (含标点) + 每个字在串里的起始下标 + 反查表。"""
+    # trailing 里的字面空格在渲染时会被去掉, 这里也必须去 —— 否则标注按"含空格"的
+    # 串定位, 而屏幕上是"不含空格"的串, 片段会找不到 (例: 想写 `B05 开|似`)。
+    text, slots, acc = "", [], 0
+    for c in chars:
+        slots.append(acc)
+        t = c["char"] + c["trailing"].strip()
+        text += t
+        acc += len(t)
+    return text, slots
 
-    标注文件 02_lyrics/soramimi_groups.txt 里一行形如:  L03  孤舵=冷  此夜
-    词按"含标点的显示串"做子串定位; 找不到就报错, 不静默跳过 —— 作者改了用字
-    而忘了同步词表时必须立刻发现。
+
+def _read_spec(li, prefix):
+    """收集 02_lyrics/soramimi_groups.txt 里所有 `<prefix><nn>` 开头的标注。
+
+    同一行可以分散写成多条 (审美标注 / 补丁各写各的), 必须**全部合并** ——
+    只取第一条会把后面的静默丢掉 (踩过)。
     """
     f = LYR / "soramimi_groups.txt"
     if not f.exists():
         return []
-    # 同一行可以分散写成多条 Lnn (例: 一条是审美标注, 一条是防误伤补丁),
-    # 必须**全部合并** —— 只取第一条会把后面的静默丢掉 (踩过: L09 的"疙瘩"被"肆意"顶掉)
-    spec = []
+    out = []
     for ln in f.read_text(encoding="utf-8").splitlines():
         ln = ln.strip()
         if ln.startswith("#"):
             continue
-        m = re.match(rf"^L{li+1:02d}\s+(.+)$", ln)
+        m = re.match(rf"^{prefix}{li+1:02d}\s+(.+)$", ln)
         if m:
-            spec += [tok.partition("=")[::2] for tok in m.group(1).split()]
+            out += m.group(1).split()
+    return out
+
+
+def load_breaks(li, chars):
+    """读断点标注 `B03  吾待|孤舵|罢`, 返回"在第几个字之后留白"的下标集合。
+
+    只认作者写的 | —— 没有任何自动插空格的规则。
+    """
+    text, slots = _display(chars)
+    slot_owner = {}
+    for i, s in enumerate(slots):
+        for k in range(1 + len(chars[i]["trailing"].strip())):
+            slot_owner[s + k] = i
+
+    out = set()
+    for frag in _read_spec(li, "B"):
+        if "|" not in frag:
+            raise SystemExit(f"ERROR: L{li+1} 的断点标注 '{frag}' 里没有 | ")
+        plain = frag.replace("|", "")
+        p = text.find(plain)
+        if p < 0:
+            raise SystemExit(f"ERROR: L{li+1} 断点片段 '{plain}' 在歌词里找不到 (整行: {text})")
+        off, cnt = [], 0
+        for chch in frag:
+            if chch == "|":
+                off.append(cnt)
+            else:
+                cnt += 1
+        for o in off:
+            if o == 0 or o == len(plain):
+                continue                    # 片段头尾的 | 无意义, 忽略
+            out.add(slot_owner[p + o - 1])  # 在这个字之后断开
+    return out
+
+
+def load_colors(li, chars):
+    """读作者标注的重点词, 返回 [(首字下标, 末字下标, 颜色 or None), ...]。
+
+    标注形如 `C03  孤舵=冷`。**只上色, 不加空格** —— 空格完全由 B 标注决定。
+    词按"含标点的显示串"做子串定位; 找不到就报错, 不静默跳过 —— 作者改了用字
+    而忘了同步标注时必须立刻发现。
+    """
+    spec = [tok.partition("=")[::2] for tok in _read_spec(li, "C")]
     if not spec:
         return []
-
-    text, slots, acc = "", [], 0
-    for c in chars:
-        slots.append(acc)
-        t = c["char"] + c["trailing"]
-        text += t
-        acc += len(t)
+    text, slots = _display(chars)
     s2c = {s: i for i, s in enumerate(slots)}
 
     out = []
@@ -230,36 +316,77 @@ def floor_durations(durs, floor):
     return d
 
 
-def word_layout(chars, words):
-    """算出每个字后面留多少 px 白, 以及每个字的 (已唱色覆盖, 未唱色覆盖)。"""
+def load_underlines(li, chars):
+    """读下划线标注 `U15  果啊`, 返回 [(首字下标, 末字下标), ...]。只加线, 不加空格。"""
+    spec = [w for w in _read_spec(li, "U")]
+    if not spec:
+        return []
+    text, slots = _display(chars)
+    s2c = {s: i for i, s in enumerate(slots)}
+    out = []
+    for w in spec:
+        p = text.find(w)
+        if p < 0:
+            raise SystemExit(f"ERROR: L{li+1} 下划线标注的 '{w}' 在歌词里找不到 (整行: {text})")
+        if p not in s2c:
+            raise SystemExit(f"ERROR: L{li+1} 的 '{w}' 从标点中间起头")
+        out.append((s2c[p], max(k for k in s2c.values() if slots[k] < p + len(w))))
+    return out
+
+
+def limit_velocity(durs, widths, ratio):
+    """限制相邻字的扫光速度比。**每次只调一对, 且保持这一对的总时长不变**,
+    所以整行总长严格不变, 只有内部边界微动。
+
+    对每一对解出满足 v_fast/v_slow == ratio 的分割点:
+        v1 = w1/x, v2 = w2/(T-x), T = 本对总时长
+        v1 快时:  x = w1*T / (w1 + ratio*w2)
+        v2 快时:  x = ratio*w1*T / (w2 + ratio*w1)
+    反复扫到收敛 (相邻对互相牵制, 一遍不够)。
+    """
+    if not ratio or ratio <= 1.0:
+        return list(durs)
+    x = list(durs)
+    for _ in range(60):
+        moved = False
+        for i in range(len(x) - 1):
+            v1, v2 = widths[i] / x[i], widths[i + 1] / x[i + 1]
+            if max(v1, v2) / min(v1, v2) <= ratio + 1e-9:
+                continue
+            T = x[i] + x[i + 1]
+            if v1 > v2:
+                a = widths[i] * T / (widths[i] + ratio * widths[i + 1])
+            else:
+                a = ratio * widths[i] * T / (widths[i + 1] + ratio * widths[i])
+            x[i], x[i + 1] = a, T - a
+            moved = True
+        if not moved:
+            break
+    return x
+
+
+def layout(chars, breaks, colors):
+    """算出每个字后面留多少 px 白, 以及每个字的着色覆盖。
+
+    留白**只来自 breaks** (作者写的 |), 没有任何自动规则 —— 上一版有一条
+    "被拖长的字后面自动留白", 它不认识词, 全曲 18 处触发、劈开 4 个真词,
+    而且"标一个词就两侧加空格"还会制造作者没要的间隔 (如"的|心")。
+    """
     n = len(chars)
-    gaps = [0] * n
-    # 词内部绝不插留白 —— 否则"被拖长"这条自动规则会把一个词从中间劈开
-    # (踩过: L9 的"疙"是长音, 留白落在"疙|瘩"之间, 把词拆散了)
-    inside = set()
-    for i0, i1, _ in words:
-        inside.update(range(i0, i1))
-    for i, c in enumerate(chars):
-        if i in inside:
-            continue
-        if (c["end"] - c["start"]) > LONG_SEC and i + 1 < n:
-            gaps[i] += GAP_LONG
+    gaps = [GAP_BREAK if (i in breaks and i + 1 < n) else 0 for i in range(n)]
     pri = [None] * n
-    for i0, i1, col in words:
-        if i0 > 0:
-            gaps[i0 - 1] += GAP_WORD
-        if i1 + 1 < n:
-            gaps[i1] += GAP_WORD
+    for i0, i1, col in colors:
         if col:
             for i in range(i0, i1 + 1):
                 pri[i] = col
-    ul = {i for i0, i1, _ in words for i in range(i0, i1 + 1)}
+    ul = {i for i0, i1, _ in colors for i in range(i0, i1 + 1)}
     return gaps, pri, ul
 
 
 def build(lines, plan):
     ev, report = [], []
     stat_raised, stat_min = 0, 99.0
+    stat_jump = stat_jump2 = 1.0
     for k, line in enumerate(lines):
         chars = line["chars"]
         t0, t1 = chars[0]["start"], chars[-1]["end"]
@@ -274,8 +401,9 @@ def build(lines, plan):
         color = SCHEMES[name][0]
         n = len(chars)
 
-        words = load_words(line["line"], chars)
-        gaps, wcol, wset = word_layout(chars, words)
+        gaps, wcol, wset = layout(chars,
+                                  load_breaks(line["line"], chars),
+                                  load_colors(line["line"], chars))
 
         # gapless 原始时长 -> 抬下限 (整行总长不变)
         raw = [max((chars[i + 1]["start"] if i + 1 < n else chars[i]["end"]) - chars[i]["start"], 0.0)
@@ -284,46 +412,122 @@ def build(lines, plan):
         stat_raised += sum(1 for a, b in zip(raw, durs) if b > a + 1e-6)
         stat_min = min(stat_min, min(raw))
 
+        # 再削掉相邻字之间的速度突变 (整行总长不变)。
+        # **必须和下限交替迭代**: 限幅是成对调整的, 会把某个字压回下限以下
+        # (实测出现过 0.20s < 下限 0.22s), 只跑一遍两个约束不能同时成立。
+        widths = [GLYPH_W * (1 + len(c["trailing"].strip())) for c in chars]
+        vel_before = [widths[i] / durs[i] for i in range(n)]
+        for _ in range(8):
+            prev = durs
+            durs = floor_durations(limit_velocity(durs, widths, WIPE_LIMIT), MIN_WIPE)
+            if max(abs(a - b) for a, b in zip(prev, durs)) < 1e-4:
+                break
+        vel_after = [widths[i] / durs[i] for i in range(n)]
+        if n > 1:
+            stat_jump = max(stat_jump,
+                            max(max(a, b) / min(a, b) for a, b in zip(vel_before, vel_before[1:])))
+            stat_jump2 = max(stat_jump2,
+                             max(max(a, b) / min(a, b) for a, b in zip(vel_after, vel_after[1:])))
+
         parts = []
         # 提前出现的那一段用一个 \k 空拍占位, 这样扫光仍从第一个字的真实起点开始
         if lin > 0.01:
             parts.append(rf"{{\k{cs(lin)}}}")
         for i, c in enumerate(chars):
             dur = cs(durs[i])
-            txt = c["char"] + c["trailing"]
+            # 去掉歌词里的字面空格 —— 一个空格就是一整个字宽的间隔, 而本项目的原则是
+            # "留白只出现在作者用 B 标注明确指定的位置"。作者写在词句之间的空格是给自己
+            # 断句看的, 不该原样变成屏幕上的间隔 (踩过: L5 因此多了一个没人要的间隔)。
+            txt = c["char"] + c["trailing"].strip()
             # \fscx / \2c / \u 都是**持续生效**的, 必须每个字显式复位, 否则第一个
             # 留白或第一个重点词之后, 后面所有字会一直沿用 (只有抽帧才看得出来)。
             tag = (rf"\1c{wcol[i] or color(i, n)}"
                    rf"\2c{wcol[i] or '&HFFFFFF&'}"
-                   r"\fscx100"
-                   + (r"\u1" if (UNDERLINE and i in wset) else r"\u0"))
+                   r"\fscx100\u0")
+            # 标点**永远单独成段**。ASS 的 \u1 / \1c 作用于整个文本段, 标点跟在字后面
+            # 同一段里的话, 装饰会一起罩上去 —— 作者反映"逗号也被划了线"。
+            # 拆开之后, 装饰只落在字上, 标点退回本行的基础配色、不带线。
+            # 拆分不影响观感: 时间按宽度分配, 扫光速度不变。
+            punct = c["trailing"].strip()
             g = gaps[i]
+            w_m = GLYPH_W
+            w_p = GLYPH_W * len(punct)
+
+            d_g = 0
             if g > 0:
                 # 留白用 {\fscxNN}\h —— \h 原生 68.6px 太宽, 缩到指定像素。
-                # 时间原则上按宽度分给"字"和"留白", 但**给留白封顶**: 光走在空白里
-                # 是看不见的, 不封顶的话短字大半时间都花在空白上, 字本身刷得更快。
-                w_c = GLYPH_W * len(txt)
-                d_g = min(dur * g / (w_c + g), cs(GAP_MAX_SEC))
+                # 时间按宽度分, 但**给留白封顶**: 光走在空白里是看不见的, 不封顶的话
+                # 短字大半时间都花在空白上, 字本身反而刷得更快。
+                d_g = min(dur * g / (w_m + w_p + g), cs(GAP_MAX_SEC))
                 d_g = max(min(int(round(d_g)), dur - cs(MIN_WIPE) // 2), 1)
-                parts.append(rf"{{{tag}\kf{max(dur - d_g, 1)}}}{txt}")
+            rest = dur - d_g
+            d_p = max(int(round(rest * w_p / (w_m + w_p))), 1) if punct else 0
+            d_m = max(rest - d_p, 1)
+
+            parts.append(rf"{{{tag}\kf{d_m}}}{c['char']}")
+            if punct:
+                parts.append(rf"{{\1c{color(i, n)}\2c&HFFFFFF&\fscx100\u0\kf{d_p}}}{punct}")
+            if d_g:
                 parts.append(rf"{{\u0\fscx{max(int(round(100*g/SPACE_ADV)),1)}\kf{d_g}}}\h")
-            else:
-                parts.append(rf"{{{tag}\kf{dur}}}{txt}")
 
         fade_in = min(FADE, int(lin * 1000)) if lin > 0 else 0
         fade_out = min(FADE, int(lout * 1000)) if lout > 0 else 0
         text = rf"{{\fad({fade_in},{fade_out})}}" + "".join(parts)
-        ev.append(f"Dialogue: 0,{ts(t0 - lin)},{ts(t1 + lout)},Sora,,0,0,0,,{text}")
+
+        # 下划线层 (layer 0, 压在正文下面)。同一行再排一遍, 只有目标词可见。
+        # 排版完全一致 —— 同样的字、同样的 \fscx 留白, 所以线必然对齐, 不需要算坐标。
+        uw = load_underlines(line["line"], chars)
+        if uw:
+            # 这一层的关键约束: **每一格恰好输出一次**, 且留白照原样补上 ——
+            # 只要总宽和正文层不等, 两层各自居中就会整体错位。曾经用"标志位 + continue"
+            # 写, 犯了两个错: 词尾标点被发两遍(多一个全角字宽 -> 左移半个字), 以及
+            # 非下划线字的留白被 continue 跳过(有断点的行会错位)。改成显式区段循环。
+            uset = {i for a, b in uw for i in range(a, b + 1)}
+            HID = r"{\1a&HFF&\3a&HFF&\4a&HFF&\bord0\shad0\fscx100\fsp2}"
+
+            def hgap(px):
+                return (rf"{{\1a&HFF&\3a&HFF&\4a&HFF&\bord0\shad0\u0\fscx"
+                        rf"{max(int(round(100*px/SPACE_ADV)),1)}}}\h")
+
+            up, i = [], 0
+            while i < n:
+                if i in uset:
+                    # 连续的一段合成同一个 {} 段 + \fsp0, 让 \u1 连成一条不断开。
+                    # 遇到标点或留白就断段 —— 它们要按正文层原样补回去。
+                    j = i
+                    while (j + 1 < n and (j + 1) in uset
+                           and not chars[j]["trailing"].strip() and gaps[j] == 0):
+                        j += 1
+                    # 用**全角空格 U+3000** 而不是原字: 等宽(排版不变)、无墨迹, 而 \u1 仍按
+                    # 前进宽度画线。用原字的话, 本层下移之后深色字身会从正文底下露出来 ——
+                    # \u1 的线和字身共用同一份颜色/透明度, 没法只藏字不藏线。
+                    up.append(rf"{{\1c{C_ULINE}\3c{C_ULINE_EDGE}\1a&H20&\3a&H50&"
+                              rf"\bord1\shad0\fscx100\fsp0\u1}}" + "　" * (j - i + 1))
+                else:
+                    j = i
+                    up.append(HID + chars[j]["char"])
+                if chars[j]["trailing"].strip():
+                    up.append(HID + chars[j]["trailing"].strip())
+                if gaps[j] > 0:
+                    up.append(hgap(gaps[j]))
+                i = j + 1
+            # MarginV 调小 = 整层往下挪, 让线离开字身。用 Dialogue 自己的 MarginV
+            # 字段做, 不用 \pos —— \pos 还得给 x, 又回到"自己算坐标"那条死路上。
+            ev.append(f"Dialogue: 0,{ts(t0 - lin)},{ts(t1 + lout)},Sora,,0,0,"
+                      f"{MARGIN_V - ULINE_DROP},,"
+                      rf"{{\fad({fade_in},{fade_out})}}" + "".join(up))
+
+        ev.append(f"Dialogue: 1,{ts(t0 - lin)},{ts(t1 + lout)},Sora,,0,0,0,,{text}")
         report.append((line["line"] + 1, t0 - lin, t1 + lout, name, gap_prev, gap_next))
     print(f"  扫光下限 {MIN_WIPE:.2f}s: 抬起 {stat_raised} 个字 "
           f"(原最短 {stat_min:.3f}s —— \\kf{cs(stat_min)} 等于瞬间弹出)")
+    print(f"  速度限幅 {WIPE_LIMIT}x: 相邻字扫光速度跳变 "
+          f"{stat_jump:.1f}x -> {stat_jump2:.1f}x")
     return ev, report
 
 
 def main():
-    global UNDERLINE
     argv = [a for a in sys.argv[1:] if not a.startswith("--")]
-    UNDERLINE = "--underline" in sys.argv[1:]
     if argv:
         plan = []
         for a in argv:
@@ -345,14 +549,19 @@ def main():
         print(f"  {rng:12s} {nm:9s} {SCHEMES[nm][1]}")
 
     inv = {v: k for k, v in TEMP.items()}
-    nw = 0
+    nw = nb = 0
     for line in lines:
-        for i0, i1, col in load_words(line["line"], line["chars"]):
-            w = "".join(line["chars"][k]["char"] + line["chars"][k]["trailing"]
-                        for k in range(i0, i1 + 1))
-            print(f"  重点词 L{line['line']+1:<2} {w:8s} {inv.get(col, '仅留白')}")
+        ch = line["chars"]
+        for i in sorted(load_breaks(line["line"], ch)):
+            print(f"  断点   L{line['line']+1:<2} {ch[i]['char']} ‿ "
+                  f"{ch[i+1]['char'] if i+1 < len(ch) else ''}")
+            nb += 1
+        for i0, i1, col in load_colors(line["line"], ch):
+            w = "".join(ch[k]["char"] + ch[k]["trailing"] for k in range(i0, i1 + 1))
+            print(f"  着色   L{line['line']+1:<2} {w:8s} {inv.get(col, '?')}")
             nw += 1
-    print(f"  (共 {nw} 个重点词" + ("; 下划线 开" if UNDERLINE else "") + ")")
+    nu = sum(len(load_underlines(l["line"], l["chars"])) for l in lines)
+    print(f"  (断点 {nb} 处 / 着色 {nw} 个 / 下划线 {nu} 个)")
     print()
 
     ev, report = build(lines, plan)

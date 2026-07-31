@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -36,13 +37,41 @@ OUTLINE = 4.0
 SHADOW = 2.0
 MARGIN_V = 96
 
-C_UNSUNG = r"&H00FFFFFF&"     # 未唱: 白
+# 未唱色 = **半透明**白 (AA=0x96 约 59% 透明), 唱到才点亮到全不透明。
+# \kf 是从 SecondaryColour 扫成 PrimaryColour, 连透明度一起插值, 所以"未唱暗、
+# 扫过点亮"和滚动扫光可以共存, 不需要逐字定位。
+C_UNSUNG = r"&H96FFFFFF&"
 C_OUTLINE = r"&H00301808&"
 
 LEAD_IN = 350                  # ms 期望的提前出现量 (会被邻行间隔压缩)
 LEAD_OUT = 350                 # ms 期望的延后消失量
 GAP_SHARE = 0.40               # 每行最多吃掉间隔的 40%, 两行合计 80%, 留 20% 空隙
 FADE = 110                     # ms 淡入淡出
+
+# ---------------------------------------------------------------- 重点词
+# 空耳造出来的准词 (孤舵 / 此夜 / 果啊) 读者切不开 —— 汉字连写没有空格。
+# 分组边界**不在时间轴里** (实测行内相邻字 92% 缝隙 <= 1ms), 只能来自语义,
+# 所以由作者在 02_lyrics/soramimi_groups.txt 里标, 格式:  L03  孤舵=冷
+#
+# 标了的词得到三件事: 两侧留白 / 整词同色 / 未唱时也带着这个色(只是暗)。
+LONG_SEC = 0.45                # 超过这个时长算"被拖长", 后面自动多留白
+GAP_WORD = 30                  # 重点词两侧留白 px
+GAP_LONG = 26                  # 被拖长的字后面再多留 px
+SPACE_ADV = 68.6               # 实测: 一个 \h 有 68.6px, 比汉字(61.1px)还宽
+GLYPH_W = 61.1                 # 实测: Microsoft YaHei @78 的全角字宽
+
+TEMP = {                       # 温度色板, 作者按词的"感觉"挑。ASS 是 &HAABBGGRR&
+    "冷": "&H00FFC878&", "暖": "&H005ABEFF&", "热": "&H005A6EFF&",
+    "静": "&H00DCE696&", "金": "&H0000D7FF&", "紫": "&H00FF96C8&",
+    "绿": "&H0096E696&",
+}
+
+# 词下划线 —— 作者定为"存着备用, 本作品不启用"。命令行 --underline 打开。
+# 实现必须用 ASS 内建的 \u1/\u0, 绝不自己算 x 坐标:
+#   试过 PyonFX 量 (它忽略内联 \fscx -> 线整体左移并逐组右漂) 和自己解析建模
+#   (整行比实际宽约 80px), 两条路都是在猜渲染器的行为, 都对不齐。
+#   \u1 由渲染器自己排, 跟着字走, 不可能错。见 ENGINEERING.md §6.16。
+UNDERLINE = False
 
 
 # ---------------------------------------------------------------- 配色方案
@@ -119,6 +148,71 @@ def scheme_for(idx, plan):
     return plan[-1][2]
 
 
+def load_words(li, chars):
+    """读作者标注的重点词, 返回 [(首字下标, 末字下标, 颜色 or None), ...]。
+
+    标注文件 02_lyrics/soramimi_groups.txt 里一行形如:  L03  孤舵=冷  此夜
+    词按"含标点的显示串"做子串定位; 找不到就报错, 不静默跳过 —— 作者改了用字
+    而忘了同步词表时必须立刻发现。
+    """
+    f = LYR / "soramimi_groups.txt"
+    if not f.exists():
+        return []
+    spec = None
+    for ln in f.read_text(encoding="utf-8").splitlines():
+        ln = ln.strip()
+        if ln.startswith("#"):
+            continue
+        m = re.match(rf"^L{li+1:02d}\s+(.+)$", ln)
+        if m:
+            spec = [tok.partition("=")[::2] for tok in m.group(1).split()]
+            break
+    if not spec:
+        return []
+
+    text, slots, acc = "", [], 0
+    for c in chars:
+        slots.append(acc)
+        t = c["char"] + c["trailing"]
+        text += t
+        acc += len(t)
+    s2c = {s: i for i, s in enumerate(slots)}
+
+    out = []
+    for w, t in spec:
+        p = text.find(w)
+        if p < 0:
+            raise SystemExit(f"ERROR: L{li+1} 词表里的 '{w}' 在歌词里找不到 (整行: {text})")
+        if p not in s2c:
+            raise SystemExit(f"ERROR: L{li+1} 的 '{w}' 从标点中间起头, 请调整词表")
+        if t and t not in TEMP:
+            raise SystemExit(f"ERROR: 未知温度 '{t}', 可选: {' '.join(TEMP)}")
+        i0 = s2c[p]
+        i1 = max(k for k in s2c.values() if slots[k] < p + len(w))
+        out.append((i0, i1, TEMP[t] if t else None))
+    return out
+
+
+def word_layout(chars, words):
+    """算出每个字后面留多少 px 白, 以及每个字的 (已唱色覆盖, 未唱色覆盖)。"""
+    n = len(chars)
+    gaps = [0] * n
+    for i, c in enumerate(chars):
+        if (c["end"] - c["start"]) > LONG_SEC and i + 1 < n:
+            gaps[i] += GAP_LONG
+    pri = [None] * n
+    for i0, i1, col in words:
+        if i0 > 0:
+            gaps[i0 - 1] += GAP_WORD
+        if i1 + 1 < n:
+            gaps[i1] += GAP_WORD
+        if col:
+            for i in range(i0, i1 + 1):
+                pri[i] = col
+    ul = {i for i0, i1, _ in words for i in range(i0, i1 + 1)}
+    return gaps, pri, ul
+
+
 def build(lines, plan):
     ev, report = [], []
     for k, line in enumerate(lines):
@@ -135,6 +229,9 @@ def build(lines, plan):
         color = SCHEMES[name][0]
         n = len(chars)
 
+        words = load_words(line["line"], chars)
+        gaps, wcol, wset = word_layout(chars, words)
+
         parts = []
         # 提前出现的那一段用一个 \k 空拍占位, 这样扫光仍从第一个字的真实起点开始
         if lin > 0.01:
@@ -142,7 +239,24 @@ def build(lines, plan):
         for i, c in enumerate(chars):
             nxt = chars[i + 1]["start"] if i + 1 < n else c["end"]
             dur = cs(max(nxt - c["start"], 0.04))     # gapless: 到下一个字的起点
-            parts.append(rf"{{\1c{color(i, n)}\kf{dur}}}{c['char']}{c['trailing']}")
+            txt = c["char"] + c["trailing"]
+            # \fscx / \2c / \u 都是**持续生效**的, 必须每个字显式复位, 否则第一个
+            # 留白或第一个重点词之后, 后面所有字会一直沿用 (只有抽帧才看得出来)。
+            tag = (rf"\1c{wcol[i] or color(i, n)}"
+                   rf"\2c{wcol[i] or '&HFFFFFF&'}"
+                   r"\fscx100"
+                   + (r"\u1" if (UNDERLINE and i in wset) else r"\u0"))
+            g = gaps[i]
+            if g > 0:
+                # 留白用 {\fscxNN}\h —— \h 原生 68.6px 太宽, 缩到指定像素。
+                # 刷光的时间按宽度分给"字"和"留白", 光速才不会在留白处突变。
+                w_c = GLYPH_W * len(txt)
+                d_c = max(int(round(dur * w_c / (w_c + g))), 1)
+                parts.append(rf"{{{tag}\kf{d_c}}}{txt}")
+                parts.append(rf"{{\u0\fscx{max(int(round(100*g/SPACE_ADV)),1)}"
+                             rf"\kf{max(dur-d_c,1)}}}\h")
+            else:
+                parts.append(rf"{{{tag}\kf{dur}}}{txt}")
 
         fade_in = min(FADE, int(lin * 1000)) if lin > 0 else 0
         fade_out = min(FADE, int(lout * 1000)) if lout > 0 else 0
@@ -153,7 +267,9 @@ def build(lines, plan):
 
 
 def main():
-    argv = sys.argv[1:]
+    global UNDERLINE
+    argv = [a for a in sys.argv[1:] if not a.startswith("--")]
+    UNDERLINE = "--underline" in sys.argv[1:]
     if argv:
         plan = []
         for a in argv:
@@ -173,6 +289,16 @@ def main():
     for lo, hi, nm in plan:
         rng = f"L{lo+1}-L{hi+1}" if hi is not None else f"L{lo+1}-末尾"
         print(f"  {rng:12s} {nm:9s} {SCHEMES[nm][1]}")
+
+    inv = {v: k for k, v in TEMP.items()}
+    nw = 0
+    for line in lines:
+        for i0, i1, col in load_words(line["line"], line["chars"]):
+            w = "".join(line["chars"][k]["char"] + line["chars"][k]["trailing"]
+                        for k in range(i0, i1 + 1))
+            print(f"  重点词 L{line['line']+1:<2} {w:8s} {inv.get(col, '仅留白')}")
+            nw += 1
+    print(f"  (共 {nw} 个重点词" + ("; 下划线 开" if UNDERLINE else "") + ")")
     print()
 
     ev, report = build(lines, plan)

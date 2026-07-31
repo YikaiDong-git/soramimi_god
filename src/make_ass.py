@@ -37,10 +37,15 @@ OUTLINE = 4.0
 SHADOW = 2.0
 MARGIN_V = 96
 
-# 未唱色 = **半透明**白 (AA=0x96 约 59% 透明), 唱到才点亮到全不透明。
-# \kf 是从 SecondaryColour 扫成 PrimaryColour, 连透明度一起插值, 所以"未唱暗、
-# 扫过点亮"和滚动扫光可以共存, 不需要逐字定位。
-C_UNSUNG = r"&H96FFFFFF&"
+# \kf 是从 SecondaryColour 扫成 PrimaryColour, 连透明度一起插值, 所以把 Secondary
+# 设成半透明就得到"未唱暗、扫过点亮", 和滚动扫光共存, 不需要逐字定位。
+#
+# ⚠ 这两个常量**必须分开**, 曾经共用同一个而踩过坑:
+#   \1c 只改颜色**不改透明度** —— 已唱部分的透明度来自 Style 的 PrimaryColour。
+#   把 Primary 也设成半透明的话, 整条字幕(连唱过的部分)都会发灰,
+#   而样片的 header 里 Primary 是硬写的不透明色, 所以样片正常、成片发灰, 更难发现。
+C_SUNG = r"&H00FFFFFF&"        # 已唱: 不透明 (真正的颜色由每个字的 \1c 覆盖)
+C_UNSUNG = r"&H96FFFFFF&"      # 未唱: 半透明白 (AA=0x96 约 59% 透明)
 C_OUTLINE = r"&H00301808&"
 
 LEAD_IN = 350                  # ms 期望的提前出现量 (会被邻行间隔压缩)
@@ -134,7 +139,7 @@ PlayResY: {PLAY_H}
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sora,{FONT},{FONT_SIZE},{C_UNSUNG},{C_UNSUNG},{C_OUTLINE},&H80000000&,-1,0,0,0,100,100,2,0,1,{OUTLINE},{SHADOW},2,60,60,{MARGIN_V},1
+Style: Sora,{FONT},{FONT_SIZE},{C_SUNG},{C_UNSUNG},{C_OUTLINE},&H80000000&,-1,0,0,0,100,100,2,0,1,{OUTLINE},{SHADOW},2,60,60,{MARGIN_V},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

@@ -60,6 +60,15 @@ FADE = 110                     # ms 淡入淡出
 #
 # 标了的词得到三件事: 两侧留白 / 整词同色 / 未唱时也带着这个色(只是暗)。
 LONG_SEC = 0.45                # 超过这个时长算"被拖长", 后面自动多留白
+
+# ---------------------------------------------------------------- 扫光节奏
+# 日文音节时长极不均 (实测单字 0.02s ~ 1.16s, 中位 0.32s), 1:1 映射把这份不均
+# 原样继承 -> 有的字只有 \kf2 (2 厘秒), 等于瞬间弹出, 根本不是"刷"。
+# 修法: 给每个字的扫光时长设下限, 缺的时间从"超出下限的部分"按比例借, 整行总长不变。
+# **只抬下限, 不压上限** —— 长音的"拖住"是真实的节奏信号, 压掉就把节奏抹平了。
+MIN_WIPE = 0.14                # 单字最短扫光时长 (秒)
+GAP_MAX_SEC = 0.05             # 留白最多占走多少扫光时间 —— 光走在空白里是"看不见"的,
+                               # 不封顶的话短字会被留白偷走大半时间, 显得更快
 GAP_WORD = 30                  # 重点词两侧留白 px
 GAP_LONG = 26                  # 被拖长的字后面再多留 px
 SPACE_ADV = 68.6               # 实测: 一个 \h 有 68.6px, 比汉字(61.1px)还宽
@@ -163,15 +172,16 @@ def load_words(li, chars):
     f = LYR / "soramimi_groups.txt"
     if not f.exists():
         return []
-    spec = None
+    # 同一行可以分散写成多条 Lnn (例: 一条是审美标注, 一条是防误伤补丁),
+    # 必须**全部合并** —— 只取第一条会把后面的静默丢掉 (踩过: L09 的"疙瘩"被"肆意"顶掉)
+    spec = []
     for ln in f.read_text(encoding="utf-8").splitlines():
         ln = ln.strip()
         if ln.startswith("#"):
             continue
         m = re.match(rf"^L{li+1:02d}\s+(.+)$", ln)
         if m:
-            spec = [tok.partition("=")[::2] for tok in m.group(1).split()]
-            break
+            spec += [tok.partition("=")[::2] for tok in m.group(1).split()]
     if not spec:
         return []
 
@@ -198,11 +208,40 @@ def load_words(li, chars):
     return out
 
 
+def floor_durations(durs, floor):
+    """给每个字的扫光时长设下限, 缺的从"超出下限的部分"按比例借, 总时长不变。
+
+    只抬下限、不压上限, 所以长音的"拖住"完整保留。
+    迭代是必要的: 借出去之后捐助者自己可能掉到下限以下, 下一轮再从剩下的借。
+    """
+    d = list(durs)
+    total = sum(d)
+    n = len(d)
+    if n == 0:
+        return d
+    if total <= floor * n:
+        return [total / n] * n           # 整行本来就挤, 只能平均分
+    for _ in range(6):
+        deficit = sum(max(floor - x, 0.0) for x in d)
+        if deficit < 1e-6:
+            break
+        pool = sum(max(x - floor, 0.0) for x in d)
+        d = [floor if x <= floor else x - deficit * (x - floor) / pool for x in d]
+    return d
+
+
 def word_layout(chars, words):
     """算出每个字后面留多少 px 白, 以及每个字的 (已唱色覆盖, 未唱色覆盖)。"""
     n = len(chars)
     gaps = [0] * n
+    # 词内部绝不插留白 —— 否则"被拖长"这条自动规则会把一个词从中间劈开
+    # (踩过: L9 的"疙"是长音, 留白落在"疙|瘩"之间, 把词拆散了)
+    inside = set()
+    for i0, i1, _ in words:
+        inside.update(range(i0, i1))
     for i, c in enumerate(chars):
+        if i in inside:
+            continue
         if (c["end"] - c["start"]) > LONG_SEC and i + 1 < n:
             gaps[i] += GAP_LONG
     pri = [None] * n
@@ -220,6 +259,7 @@ def word_layout(chars, words):
 
 def build(lines, plan):
     ev, report = [], []
+    stat_raised, stat_min = 0, 99.0
     for k, line in enumerate(lines):
         chars = line["chars"]
         t0, t1 = chars[0]["start"], chars[-1]["end"]
@@ -237,13 +277,19 @@ def build(lines, plan):
         words = load_words(line["line"], chars)
         gaps, wcol, wset = word_layout(chars, words)
 
+        # gapless 原始时长 -> 抬下限 (整行总长不变)
+        raw = [max((chars[i + 1]["start"] if i + 1 < n else chars[i]["end"]) - chars[i]["start"], 0.0)
+               for i in range(n)]
+        durs = floor_durations(raw, MIN_WIPE)
+        stat_raised += sum(1 for a, b in zip(raw, durs) if b > a + 1e-6)
+        stat_min = min(stat_min, min(raw))
+
         parts = []
         # 提前出现的那一段用一个 \k 空拍占位, 这样扫光仍从第一个字的真实起点开始
         if lin > 0.01:
             parts.append(rf"{{\k{cs(lin)}}}")
         for i, c in enumerate(chars):
-            nxt = chars[i + 1]["start"] if i + 1 < n else c["end"]
-            dur = cs(max(nxt - c["start"], 0.04))     # gapless: 到下一个字的起点
+            dur = cs(durs[i])
             txt = c["char"] + c["trailing"]
             # \fscx / \2c / \u 都是**持续生效**的, 必须每个字显式复位, 否则第一个
             # 留白或第一个重点词之后, 后面所有字会一直沿用 (只有抽帧才看得出来)。
@@ -254,12 +300,13 @@ def build(lines, plan):
             g = gaps[i]
             if g > 0:
                 # 留白用 {\fscxNN}\h —— \h 原生 68.6px 太宽, 缩到指定像素。
-                # 刷光的时间按宽度分给"字"和"留白", 光速才不会在留白处突变。
+                # 时间原则上按宽度分给"字"和"留白", 但**给留白封顶**: 光走在空白里
+                # 是看不见的, 不封顶的话短字大半时间都花在空白上, 字本身刷得更快。
                 w_c = GLYPH_W * len(txt)
-                d_c = max(int(round(dur * w_c / (w_c + g))), 1)
-                parts.append(rf"{{{tag}\kf{d_c}}}{txt}")
-                parts.append(rf"{{\u0\fscx{max(int(round(100*g/SPACE_ADV)),1)}"
-                             rf"\kf{max(dur-d_c,1)}}}\h")
+                d_g = min(dur * g / (w_c + g), cs(GAP_MAX_SEC))
+                d_g = max(min(int(round(d_g)), dur - cs(MIN_WIPE) // 2), 1)
+                parts.append(rf"{{{tag}\kf{max(dur - d_g, 1)}}}{txt}")
+                parts.append(rf"{{\u0\fscx{max(int(round(100*g/SPACE_ADV)),1)}\kf{d_g}}}\h")
             else:
                 parts.append(rf"{{{tag}\kf{dur}}}{txt}")
 
@@ -268,6 +315,8 @@ def build(lines, plan):
         text = rf"{{\fad({fade_in},{fade_out})}}" + "".join(parts)
         ev.append(f"Dialogue: 0,{ts(t0 - lin)},{ts(t1 + lout)},Sora,,0,0,0,,{text}")
         report.append((line["line"] + 1, t0 - lin, t1 + lout, name, gap_prev, gap_next))
+    print(f"  扫光下限 {MIN_WIPE:.2f}s: 抬起 {stat_raised} 个字 "
+          f"(原最短 {stat_min:.3f}s —— \\kf{cs(stat_min)} 等于瞬间弹出)")
     return ev, report
 
 

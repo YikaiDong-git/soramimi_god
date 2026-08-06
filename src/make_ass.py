@@ -928,6 +928,18 @@ def main():
         return selftest(lines)
     if "--ruby-report" in sys.argv[1:]:
         return ruby_report(lines)
+    if "--ruby-lines" in sys.argv[1:]:
+        # 逐行铺开, 用来**扫读音**。--ruby-report 按代价排序, 适合找"配错字"的;
+        # 读音错不错跟代价无关 (错读音也可能配得很像), 只能整行对着听。
+        for line in lines:
+            ch = line["chars"]
+            print(f"\nL{line['line']+1:<2} " + "".join(c["char"] + c["trailing"]
+                                                      for c in ch))
+            print("    " + "  ".join("+".join(r) or "-"
+                                     for r in line_syls(line, ch)))
+        print("\n读音不对的, 往 02_lyrics/reading_overrides.txt 加一行 `汉字=かな`,")
+        print("然后重跑: romaji_from_ref.py -> force_align.py -> soramimi_align.py")
+        return 0
 
     if layout:
         print(f"对照版式: {layout}  {LAYOUTS[layout]['title']}")

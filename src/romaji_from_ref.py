@@ -34,6 +34,29 @@ def lines_of(p):
             if r.strip() and not r.lstrip().startswith("#")]
 
 
+def load_overrides():
+    """读读音覆盖表 02_lyrics/reading_overrides.txt, 每行 `汉字=かな`。
+
+    为什么需要它:
+        MeCab 的读音是**看上下文**猜的, 歌词里经常猜错。实测「君」单独转是 kimi,
+        但放进整行就被当成后缀读成 kun —— 而这个错读音是**喂给强制对齐器**的,
+        所以错的不只是屏幕上的注音, 连那一处的时间轴都是按错音对的。
+
+    做法是在转罗马音**之前**把汉字替换成假名: 假名读音无歧义, MeCab 没有猜错的
+    余地。替换只作用于罗马音/对齐这条链, ref_ja.txt 里显示用的原句仍是汉字。
+    """
+    p = LYR / "reading_overrides.txt"
+    if not p.exists():
+        return []
+    out = []
+    for ln in lines_of(p):
+        k, _, v = ln.partition("=")
+        if k.strip() and v.strip():
+            out.append((k.strip(), v.strip()))
+    # 长的先替换, 免得短词把长词切断 (如 先替换「何」会毁掉「何か」)
+    return sorted(out, key=lambda kv: -len(kv[0]))
+
+
 def main():
     src = LYR / "ref_ja.raw.txt"
     if not src.exists():
@@ -43,6 +66,21 @@ def main():
 
     rows = lines_of(src)
     print(f"  源: {src.name}  {len(rows)} 行")
+
+    ov = load_overrides()
+    if ov:
+        hits = {k: 0 for k, _ in ov}
+        for i, t in enumerate(rows):
+            for k, v in ov:
+                if k in t:
+                    hits[k] += t.count(k)
+                    rows[i] = rows[i].replace(k, v)
+        applied = [(k, v, hits[k]) for k, v in ov if hits[k]]
+        print(f"  读音覆盖 {len(applied)}/{len(ov)} 条命中: "
+              + ", ".join(f"{k}->{v} x{n}" for k, v, n in applied))
+        miss = [k for k, _ in ov if not hits[k]]
+        if miss:
+            print(f"  ** 未命中 (原句里找不到): {', '.join(miss)}")
 
     import cutlet
     import pykakasi

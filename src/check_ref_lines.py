@@ -21,6 +21,9 @@ import json
 import sys
 from pathlib import Path
 
+sys.argv = [sys.argv[0]]                      # make_ass 会读 argv, import 前清空
+import make_ass as M                          # noqa: E402
+
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -59,8 +62,9 @@ def main():
         if not p.exists():
             print(f"  未提供 —— 当前走占位文本, 成片右上角会有 PLACEHOLDER 角标")
             continue
-        rows = [r.strip() for r in p.read_text(encoding="utf-8").splitlines()]
-        rows = [r for r in rows if r]
+        # 用 make_ass 的读取函数, 不自己再写一遍过滤规则 —— 校验器和渲染器
+        # 对"哪些行算正文"的理解必须完全一致, 否则校验的是另一个文件
+        rows = M.read_ref(kind)
         print(f"  行数 {len(rows)}  (需要 {n_lines})")
         if len(rows) != n_lines:
             print(f"  ** 行数对不上 —— 空耳有 {n_lines} 行, 一一对应才能贴上去")

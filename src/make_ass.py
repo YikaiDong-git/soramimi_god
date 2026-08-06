@@ -222,6 +222,20 @@ _FILL = {"ja": "ここに日本語の原詞が入ります対照用の仮の文�
          "zh": "此处为中文翻译占位仅用于判断版面长度与留白效果"}
 
 
+def read_ref(kind):
+    """读 02_lyrics/ref_<kind>.txt 的正文行 (跳过空行和 `#` 注释)。
+
+    **只此一处**读这两个文件。曾经 make_ass 过滤了 `#` 而 check_ref_lines 没有,
+    结果校验器把注释也数成歌词、报"行数 22 需要 15" —— 两个读者两套规则,
+    比没有校验器更糟。凡是"同一份文件多处读", 都该收敛成一个函数。
+    """
+    p = LYR / f"ref_{kind}.txt"
+    if not p.exists():
+        return []
+    return [r.strip() for r in p.read_text(encoding="utf-8").splitlines()
+            if r.strip() and not r.lstrip().startswith("#")]
+
+
 def ref_text(kind, li, n_syl):
     """取第 li 行的参考文本, 返回 (文本, 是否占位)。
 
@@ -229,12 +243,9 @@ def ref_text(kind, li, n_syl):
     0.70 倍字数, 中译约 0.85 倍)。所以"挤不挤、够不够放"在占位下看到的和填真
     文本之后是同一回事, 版面不必重挑。
     """
-    path = LYR / f"ref_{kind}.txt"
-    if path.exists():
-        rows = [r.strip() for r in path.read_text(encoding="utf-8").splitlines()
-                if r.strip()]
-        if li < len(rows):
-            return rows[li], False
+    rows = read_ref(kind)
+    if li < len(rows):
+        return rows[li], False
     k = max(int(round(n_syl * (0.70 if kind == "ja" else 0.85))), 4)
     pool = _FILL[kind]
     return (pool * 3)[(li * 5) % len(pool):][:k], True

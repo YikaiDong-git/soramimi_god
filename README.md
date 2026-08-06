@@ -1,121 +1,112 @@
-# soramimi_god
+# 打上花火 空耳卡拉OK — 流水线
 
-**把人写的中文空耳歌词，逐字对齐到日文原曲的演唱时间轴上，自动压成 KTV 逐字变色的成品视频。**
+把用户手写的中文空耳，逐字对齐到 B 站 MV 的演唱时间轴上，压成带 KTV 逐字变色的成品视频。
 
-人只做三件事：挑 MV、写空耳、选特效。其余全自动。
+## 结论先行：算力放在本地，成果放服务器
 
----
+`sinfo` 实测 hgcc 全部节点 `GRES=(null)`，**集群没有 GPU**。本地那块 RTX 2070 SUPER (8 GB, sm_75)
+是整套系统唯一的 GPU，所以重 ML 全在本地跑，产物同步到
+`/beegfs/labs/weinstocklab/projects/ydon268/funny/konger/dashanghuahuo/`。
 
-## 这个项目解决的问题
+## 目录
 
-空耳（soramimi）是把外语歌词按发音改写成本国语言的谐音。想把它做成卡拉OK视频，卡在中间这一步：
-
-强制对齐工具给你的是「**日文音节 → 时间**」，可屏幕上要显示的是**中文汉字**，而两者
-
-- **数量不等** —— 观察到的实例中，一行 7 个汉字对应 10 个日文音拍
-- **断句不等** —— 作者的分行与原曲、与 ASR 的分行都不一致
-- **没有现成工具** —— 这一层映射需要自研
-
-**核心洞察**：空耳本身就是照着"听起来像"写的，所以**音素相似度就是最强的对齐信号**。
-
-于是把日文罗马音音节和中文拼音音节都投影到**同一个发音特征空间**（辅音的部位/方法/清浊 + 元音的高低/前后/圆唇），在这个空间上做**子序列 DTW**。
-
-```
-日文行 → 音节切分 → 每音节 [start, end]
-                          ↓
-                    日文音素三元组
-                          ↓
-              ← 跨语言音素距离上做 DTW →
-                          ↑
-                中文声母/韵腹/韵尾
-                          ↑
-空耳行 → 逐汉字 ←──────────┘
-        ↓
-  每字继承一段时间 → \kf 值
-```
-
-## 流水线
-
-```
-B站检索(WBI签名) → 候选抽帧实测硬字幕 → 下载
-       → BS-RoFormer 人声分离 → Whisper ASR → 罗马音
-       → yohane 音节级强制对齐 → 人声能量门控剔除幻觉音节
-       → 【子序列 DTW 配对】→ .ass 生成(32 种特效)
-       → libass + NVENC 压制 → 抽帧 QC
-```
-
-## 选型
-
-每一环都实测比过，不用默认值：
-
-| 环节 | 选定 | 为什么不是默认 |
-|---|---|---|
-| B站搜索 | 自实现 WBI 签名 | yt-dlp 的 `bilisearch` 不带 buvid3 也不签名 → HTTP 412 |
-| 下载 | yt-dlp | BBDown 已于 2026-05 归档停维 |
-| 人声分离 | BS-RoFormer **ep_368** | 仓库自己的 benchmark：ep_368 中位 SDR **12.102** > 默认 ep_317 的 11.774 |
-| 强制对齐 | yohane + `mms-300m-ForcedAligner-karaoke-ja-Latn` | 日文卡拉OK专用微调 |
-| 特效 | PyonFX | 逐字动画需要精确字体度量 |
-| 空耳配对 | 自研 | 无现成工具 |
-
-## 文档
-
-- **[ENGINEERING.md](ENGINEERING.md)** —— 工程手册。逐阶段规范、验收标准、核心算法推导、**12 条故障模式**（每条含现象/根因/实测证据/修法）、复现步骤、验证清单。
-
-## 快速开始
-
-```bash
-export PYTHONIOENCODING=utf-8
-cd src
-
-python bili_search.py "<歌名>" 2     # 检索候选
-python probe_candidates.py           # 拉元数据
-python frame_grab.py                 # 抽帧实测硬字幕   ← 人工选片
-# ... 下载 MV 到 00_source/
-python separate_vocals.py            # 人声分离
-python transcribe_vocals.py          # ASR + 罗马音
-python force_align.py                # 音节级强制对齐
-# ... 空耳写进 02_lyrics/soramimi_user.txt
-python soramimi_align.py             # 子序列 DTW      ← 看 align_report.md
-python make_ass.py                   # 字幕: 滚动扫光 + 逐字配色
-python burn.py ice_rainbow           # 压制 + QC       ← 人工看图
-```
-
-分段换配色、以及把默认的滚动扫光换成逐字动画，都是可选的：
-
-```bash
-python make_ass.py 0-8:ice 9-:rainbow   # 前 9 行寒冰, 之后彩虹（这也是默认方案）
-python make_ass.py 0-:fire              # 整首火焰; 6 种配色见 make_ass.py 的 SCHEMES
-python render_effects.py                # 可选支路: 32 种逐字动画样片 ← 人工挑
-python burn.py ice_rainbow --trim=2.85  # 顺手砍掉 UP 主自制片头
-```
-
-环境搭建见 ENGINEERING.md §2（**安装顺序有讲究**，装反了 torch 会被静默降级成 CPU 版）。
-
-## 特效
-
-32 种逐字特效，分 7 类：填充/基础(4)、缩放(6)、位移(6)、旋转(5)、模糊发光(4)、颜色(4)、组合主题(3)。
-
-`python effects.py` 列出全部；`python render_effects.py` 为每种渲染样片供挑选。
-
-## 已验证的实例
-
-`examples/dashanghuahuo/` —— 打上花火（DAOKO × 米津玄師）
-
-| 指标 | 结果 |
+| 目录 | 内容 |
 |---|---|
-| 空耳 | 14 行 / 122 字 |
-| DTW 平均每字代价 | 0.236（阈值 0.35） |
-| 超阈值行数 | **0 / 14** |
-| 语义抽查 | 3 / 3 正确 |
-| 剔除的幻觉音节 | 196 / 745 |
+| `00_source/` | B 站候选元数据、下载的 MV |
+| `01_stems/` | 抽出的音轨 + BS-RoFormer 分离的人声/伴奏 |
+| `02_lyrics/` | 用户空耳、ASR 转录、罗马音、音节时间轴、对齐报告 |
+| `03_subs/` | 生成的 `.ass` 字幕（三种配色） |
+| `04_output/` | 压制成品 |
+| `05_qc/` | 抽帧自检图 |
+| `code/` | 本目录 |
 
-## 设计原则
+## 环境
 
-1. **不信估算，只信实测。** 显存、SDR、对齐质量全部在脚本里实测并打印。（调研阶段估算对齐器要 3–4 GB，实测 7.17 GB。）
-2. **筛选器必须有阳性对照。** 硬字幕检测的候选集里放一个已知有字幕的，确认检出后其余判定才可信。
-3. **"跑完了"不等于"跑对了"。** 人声分离要验纯器乐段是否归零；字幕要抽帧肉眼看（libass 找不到字体不报错，会静默变方块）。
-4. **区分搜索问题和打分问题。** DTW 对错位时，先固定成一一对应扫所有起点 —— 如果正确起点代价最低，那就是搜索飘了，不该去改打分函数。
+一次性装在 `C:/Users/59827/karaoke/`：
 
-## License
+- `tools/ffmpeg/` — BtbN 静态构建，带 `h264_nvenc`（压制用）
+- `tools/ffmpeg-shared71/` — **FFmpeg 7.1 动态库**，torchcodec 专用
+  （torchcodec 只支持 FFmpeg 4–8；BtbN 的 `master` 构建是 avcodec-63 = FFmpeg 9，**太新会加载失败**）
+- `venv/` — Python 3.12.2 + torch 2.13.0+**cu126**
 
-MIT
+> **安装顺序有坑**：先装 cu124 torch、再装 `audio-separator[gpu]`，pip 会从默认 PyPI
+> 把 torch 覆盖成 CPU 版，torchaudio 还是 CUDA 版 → ABI 不匹配、`libtorchaudio.pyd` 加载崩。
+> 正确顺序是先装 audio-separator，**最后**从 cu126 源装 torch 系。
+> 选 cu126 而非 cu130 是因为 `onnxruntime-gpu` 是 CUDA 12 系，混用会炸。
+
+## 脚本
+
+按流水线顺序：
+
+| # | 脚本 | 用途 | 用法 |
+|---|---|---|---|
+| 1 | `bili_search.py` | B 站关键词检索（**自实现 WBI 签名**） | `python bili_search.py "打上花火" 2` |
+| 2 | `probe_candidates.py` | 拉候选元数据（清晰度/时长/码率） | `python probe_candidates.py` |
+| 3 | `frame_grab.py` | 候选抽帧，**实测有无硬字幕** | `python frame_grab.py` |
+| 4 | `separate_vocals.py` | 抽音轨 + BS-RoFormer 分离人声 | `python separate_vocals.py` |
+| 5 | `transcribe_vocals.py` | Whisper 转录人声 → 双路罗马音 | `python transcribe_vocals.py` |
+| 6 | `force_align.py` | yohane 音节级强制对齐 → 浮点时间轴 | `python force_align.py` |
+| 7 | `phonetics.py` | 跨语言音素特征 + 距离（被 8 调用） | `python phonetics.py`（自检） |
+| 8 | `soramimi_align.py` | **子序列 DTW**：日文音节 → 空耳汉字 | `python soramimi_align.py` |
+| 9 | `make_ass.py` | 滚动扫光 `\kf` + 逐字配色（6 方案，可分段） | `python make_ass.py 0-8:ice 9-:rainbow` |
+| 10 | `burn.py` | libass 渲染 + NVENC 压制 + QC 抽帧 | `python burn.py ice_rainbow --trim=2.85` |
+
+可选支路（逐字动画，默认不启用）：
+
+| 脚本 | 用途 | 用法 |
+|---|---|---|
+| `effects.py` | 32 种逐字动画的定义（库，不单独跑） | `python effects.py` 列表 |
+| `render_effects.py` | 为每种特效渲染一段样片供挑选 | `python render_effects.py` |
+| `make_mixed.py` | 按行段给不同特效换挡 | `python make_mixed.py` |
+
+对照版式选型（「原文 + 翻译 + 空耳」同框，2026-08-06 加）：
+
+| 脚本 | 用途 | 用法 |
+|---|---|---|
+| `layout_variants.py` | 渲染 23 个版式候选（各 2 帧）。空耳主行直接复用 `make_ass.build()`，只改 4 个边距字段 | `python layout_variants.py` / `... E3 C1` |
+| `measure_metrics.py` | 从 libass 渲染结果**数像素**量排版度量（字形宽 / `\h` / Spacing 位置）；`make_ass` 的常量就是被它证伪的 | `python measure_metrics.py` |
+| `check_ruby_align.py` | 注音层逐格对齐的**数值**核对（不是看图），偏差 > 2px 报错 | `python check_ruby_align.py` |
+| `build_layout_page.py` | 汇总成可挑选的 HTML：`index.html`（本地原图）+ `artifact.html`（图片内联，可发布） | `python build_layout_page.py` |
+
+参考行（日文原句 / 中文翻译）读 `02_lyrics/ref_ja.txt` 和 `ref_zh.txt`，每行一句、与
+空耳 15 行一一对应。**文件缺失时自动落到占位文本**并在画面角上打 `PLACEHOLDER` 标记 ——
+占位的每行字数和每格音节数都取自真实数据，所以版面判断不受影响。这两份文本属受版权保护
+的原作及其演绎，与其他日文中间产物一样**不进公开仓库**（见 §9 版权边界）。
+
+所有脚本都用 `C:/Users/59827/karaoke/venv/Scripts/python.exe` 跑，且需要
+`PYTHONIOENCODING=utf-8`（否则 Windows 控制台 cp1252 会在打印中日文时崩）。
+
+## 各环节的选型依据
+
+| 环节 | 选定 | 为什么不是默认选项 |
+|---|---|---|
+| B 站搜索 | 自写 WBI 签名检索器 | yt-dlp 的 `bilisearch` 不带 `buvid3` cookie 也不做 WBI 签名 → **HTTP 412**（实测复现） |
+| 下载 | yt-dlp | BBDown 已于 2026-05-14 归档停维 |
+| 人声分离 | `model_bs_roformer_ep_368_sdr_12.9628` | 包默认是 ep_317。但仓库自己的 `models-scores.json` 在同一批 40 首上实测中位 vocals SDR：**ep_368 = 12.102 > ep_317 = 11.774**。文件名里的 12.9755 是作者训练时自报值 |
+| 强制对齐 | yohane + `NextFire/mms-300m-ForcedAligner-karaoke-ja-Latn` | 日文卡拉OK专用微调，缓解默认 MMS_FA "行尾音节被压短"的缺陷 |
+| 空耳配对 | 自写子序列 DTW | 无现成工具 |
+
+## 已知坑（都已实测复现，不是道听途说）
+
+1. **yohane 不吃日文。** `normalize_uroman()` 做 `re.sub("([^a-z'\n ])", " ", text)`，
+   汉字假名被整个删掉且**不报错**。本地实测：`normalize_uroman('打上花火')` → `''`。
+   必须先转罗马音。
+2. **yohane 没有 `--output` 参数**，输出路径由输入音频名推导，且 `with_suffix()`
+   只剥最后一段 → `x.vocals.wav` 会被当成 stem `x`。所以喂给它的文件名不能带多余的点。
+3. **绝不能 `pip install "yohane[cli]"`。** 它的 `pyproject` 用 `[tool.uv.sources]`
+   把 `vocal-remover` 指向 Japan7 的 fork，而 pip 不认这个字段，会从 PyPI 装到一个
+   同名的无关 stub（v0.0.6，homepage 指向 `pypa/sampleproject`）→ 装完看着正常，运行时 ImportError。
+4. **audio-separator OOM 不会大声崩**，只报 "Separation produced no output files"，
+   真正的 `torch.OutOfMemoryError` 只在 traceback 里 → 诊断时必须 `--log_level debug`。
+5. **`--mdxc_segment_size` 单独给是无效的**，必须同时给 `--mdxc_override_model_segment_size`。
+6. **`--model_file_dir` 默认是 POSIX 的 `/tmp/...`**，Windows 上会落到当前盘根目录 → 必须显式传。
+7. **transformers 的 ASR pipeline 传文件路径会调裸 `ffmpeg`**，PATH 上没有就 ValueError。
+   解法是自己用 soundfile 读成 numpy 数组传进去，整条依赖直接消掉。
+8. **libass 找不到字体不会报错**，会静默回退导致中文变方块 → 只看 ffmpeg 返回码不够，**必须抽帧看**。
+
+## 验证过的事实（非估算）
+
+- CUDA：`torch 2.13.0+cu126`，`torch.cuda.is_available()=True`，RTX 2070 SUPER 8.59 GB，sm_75，矩阵乘通过
+- 人声分离**真的生效**：前奏 2–15s 和尾奏 285–296s 人声轨 RMS = **0.00000**，主歌/副歌段有能量
+- 音素距离自检：真空耳对应（`ha`↔哈、`shi`↔西、`to`↔拖）距离 = 0.000；随机对照 0.41–0.68
+- 候选筛选带**阳性对照**（标题明写"中日歌词"的那个），确认检测器能看出硬字幕后，筛选结果才可信

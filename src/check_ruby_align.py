@@ -77,9 +77,49 @@ def predicted_centers(line):
     return out, total
 
 
+def invariant_check(lines):
+    """解析式核对: **每个注音组的中心必须等于它那个字的格心**。
+
+    为什么要有这条 (它是被一次真实回归逼出来的):
+        渲染式核对靠 ZZ 诊断帧, 而那张帧每格只发一根等宽的 `|` —— "多拍格子太宽"
+        这条路径根本不会被触发。于是曾经给宽格子加了"向邻居借宽度", 真实注音整行
+        偏掉, 而诊断仍然报 0.87px 通过。**夹具不同形的测试, 只能证明它自己没错。**
+        这条检查直接读排版用的那几个量, 与内容宽窄无关, 那次回归会被它一眼抓住。
+    """
+    bad = 0
+    for line in lines:
+        chars = line["chars"]
+        gaps, _, _ = M.layout(chars, M.load_breaks(line["line"], chars),
+                              M.load_colors(line["line"], chars))
+        x_main = x_ruby = 0.0
+        for i, c in enumerate(chars):
+            n_p = len(c["trailing"].strip())
+            # 字格和标点格是**分开**的两格, 两层都如此。把它们并成一格算
+            # (PITCH*(1+标点数)) 会让带标点的字虚报 31.55px 偏移 —— 我这条检查
+            # 第一版就是这么写的, 报了 6 处假警。检查本身也要按真实排版建模。
+            cm = x_main + LV.GLYPH / 2                 # 正文里这个字的中心
+            cr = x_ruby + LV.PITCH / 2                 # 注音这一组的中心
+            if abs(cm - cr) > 1.5:
+                print(f"  L{line['line']+1} 第{i+1}字 '{c['char']}' "
+                      f"注音中心偏离 {cr-cm:+.2f}px")
+                bad += 1
+            x_main += LV.PITCH * (1 + n_p)
+            x_ruby += LV.PITCH * (1 + n_p)
+            if gaps[i] > 0:
+                nn = max(int(round(100 * gaps[i] / M.SPACE_ADV)), 1)
+                g = LV.H_ADV * nn / 100 + LV.FSP
+                x_main += g
+                x_ruby += g
+    print(f"  逐格居中不变量: {'OK' if not bad else f'**{bad} 处偏离**'}"
+          f"   (共 {sum(len(l['chars']) for l in lines)} 字)")
+    return bad
+
+
 def main():
     shots = ARGV or ["ZZ_L15.jpg", "ZZ_L03.jpg"]
     lines = json.loads((LV.LYR / "soramimi_timed.json").read_text(encoding="utf-8"))
+    bad = invariant_check(lines)
+    print()
     idx = {"L15": 14, "L03": 2}
     bad = 0
     for s in shots:

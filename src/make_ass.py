@@ -184,7 +184,7 @@ LAYOUTS = {
         title="画面居左 940x529 / 右栏 上=原文译文 下=注音空耳",
         geom="scale=940:529,pad=1920:1080:0:276:0x0A0A0F",
         sora=dict(mv=376, ml=968, mr=32),
-        ruby=dict(size=34, mv=460, sep=""),      # 与主行差 84, 和 E3 同一组实测值
+        ruby=dict(size=34, mv=460, sep=""),   # 与主行差 84, 和 E3 同一组实测值
         rows=[("ja", dict(an=2, mv=688, size=40)),
               ("zh", dict(an=2, mv=624, size=40))],
     ),
@@ -415,14 +415,25 @@ def ruby_row(chars, gaps, size, sep="", cols=None, syls=None):
         fx = 100 * px / pad_unit
         return rf"{{\fsp0\fscx{fx:.2f}}}　" if fx >= 0.2 else ""
 
+    texts = [sep.join(syls[i] if syls else ruby_syls(c, i))
+             for i, c in enumerate(chars)]
+    nat = [adv(t, size) if t else 0.0 for t in texts]
+    # 每格只算**字**那一格宽。标点在下面单独发一个等宽占位 ——
+    # 写成 PITCH*(1+标点数) 就等于把标点宽度算两遍, 该字之后整行右移一个字宽
+    # (实测 6 处、每处 31.55px)。这是 §6.29 那条"标点必须自己占一格"的复发。
+    cap = [PITCH] * len(chars)
+
+    # 曾经试过让挤的格子"向邻居借闲置宽度"来避免压扁, **已回退**:
+    # 借来的宽度会让整组偏离它那个字的正中, 作者反映"好多行罗马音和字不对齐了"。
+    # 对齐是硬要求, 压扁只是不好看 —— 多拍格子的可读性交给音节分隔符 (sep) 解决,
+    # 不能拿对齐去换。每一格严格居中在它自己的字上, 不向外借一个像素。
     for i, c in enumerate(chars):
-        txt = sep.join(syls[i] if syls else ruby_syls(c, i))
-        nat = adv(txt, size) if txt else 0.0
+        txt, w, room = texts[i], nat[i], cap[i]
         c1 = rf"\1c{cols[i]}" if cols else ""      # 跟随头顶那个字的颜色
-        if nat > PITCH and nat > 0:               # 挤不下 -> 压扁, 不溢出
-            out.append(rf"{{\fsp0{c1}\fscx{100 * PITCH / nat:.2f}}}{txt}")
+        if w > room and w > 0:                     # 借完还是挤不下 -> 才压扁
+            out.append(rf"{{\fsp0{c1}\fscx{100 * room / w:.2f}}}{txt}")
         else:
-            pad = spacer((PITCH - nat) / 2)
+            pad = spacer((room - w) / 2)
             out.append(pad + rf"{{\fsp0{c1}\fscx100}}{txt}" + pad)
         for _ in c["trailing"].strip():           # 标点: 等宽空格占位
             out.append(spacer(PITCH))

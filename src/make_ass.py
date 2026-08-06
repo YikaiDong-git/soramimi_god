@@ -160,6 +160,166 @@ SCHEMES = {
 # 分段方案: (起行, 止行含, 配色)  行号 0 起算; 止行为 None 表示到末尾
 DEFAULT_PLAN = [(0, 8, "ice"), (9, None, "rainbow")]
 
+# --------------------------------------------------------------------------
+# 对照版式 —— 把日文原句和中文翻译作为**静态**参考行放进画面 (不滚色)
+#
+# 不传 --layout 时本文件的输出与加这段之前**逐字节相同**, 由 `--selftest` 保证 ——
+# 作者已确认满意的那一版不会因为多了这个功能而漂移。
+#
+# geom  给 burn.py 用的画面几何 (只有需要改画幅的版式才有)
+# sora  覆盖主行的 MarginL / MarginR / MarginV
+# rows  参考行, 各自继承 sora 的左右边距。an=2 底部对齐, an=8 顶部对齐
+# --------------------------------------------------------------------------
+LAYOUTS = {
+    "A2": dict(
+        title="中译 / 日文 / 空耳 —— 三行叠压, 画面不缩",
+        sora=dict(mv=MARGIN_V),
+        rows=[("zh", dict(an=2, mv=MARGIN_V + 196, size=42)),
+              ("ja", dict(an=2, mv=MARGIN_V + 128, size=38))],
+    ),
+    "B1": dict(
+        title="画面居左 940x529 / 右栏 日文·中译·空耳",
+        geom="scale=940:529,pad=1920:1080:0:276:0x0A0A0F",
+        sora=dict(mv=442, ml=968, mr=32),
+        rows=[("ja", dict(an=2, mv=652, size=40)),
+              ("zh", dict(an=2, mv=578, size=40))],
+    ),
+    "C2": dict(
+        title="底部黑带放空耳+中译 / 日文浮在画面顶部",
+        geom="scale=1920:810,pad=1920:1080:0:0:0x000000",
+        sora=dict(mv=110),
+        rows=[("ja", dict(an=8, mv=34, size=40)),
+              ("zh", dict(an=2, mv=32, size=40))],
+    ),
+    "C4": dict(
+        title="半透明色带 —— 画面不缩, 底部铺一层暗色",
+        band=(786, 294, r"&H0C0A08&", r"&H58&"),      # y, 高, 颜色, 透明度
+        sora=dict(mv=MARGIN_V),
+        rows=[("ja", dict(an=2, mv=MARGIN_V + 196, size=42)),
+              ("zh", dict(an=2, mv=MARGIN_V + 126, size=42))],
+    ),
+    "E3": dict(
+        title="逐字注音 + 空耳 + 日文顶 + 中译底",
+        sora=dict(mv=MARGIN_V + 56),
+        ruby=dict(size=34, mv=MARGIN_V + 140, sep=""),
+        rows=[("ja", dict(an=8, mv=40, size=40)),
+              ("zh", dict(an=2, mv=MARGIN_V - 8, size=40))],
+    ),
+}
+
+REF_SIZE = 40                      # Ref 样式基准字号, 每行再用 \fs 覆盖
+C_REF = {"ja": r"&HE8E8E8&", "zh": r"&HC8DCE6&"}     # 日文近白 / 中译微暖白
+A_REF = {"ja": r"&H30&", "zh": r"&H40&"}             # 00=不透明, FF=全透
+
+# 参考行占位句池 —— 只为撑出真实长度, 不是任何作品的文字。
+# 真文本放 02_lyrics/ref_ja.txt / ref_zh.txt (每行一句, 与空耳行一一对应);
+# 原曲歌词及其译文属受版权保护文本, 已在 .gitignore, 不进公开仓库。
+_FILL = {"ja": "ここに日本語の原詞が入ります対照用の仮の文字列です",
+         "zh": "此处为中文翻译占位仅用于判断版面长度与留白效果"}
+
+
+def ref_text(kind, li, n_syl):
+    """取第 li 行的参考文本, 返回 (文本, 是否占位)。
+
+    占位按**真实度量**生成: 长度由该行真实音节数换算 (日文书写形态约为音节数的
+    0.70 倍字数, 中译约 0.85 倍)。所以"挤不挤、够不够放"在占位下看到的和填真
+    文本之后是同一回事, 版面不必重挑。
+    """
+    path = LYR / f"ref_{kind}.txt"
+    if path.exists():
+        rows = [r.strip() for r in path.read_text(encoding="utf-8").splitlines()
+                if r.strip()]
+        if li < len(rows):
+            return rows[li], False
+    k = max(int(round(n_syl * (0.70 if kind == "ja" else 0.85))), 4)
+    pool = _FILL[kind]
+    return (pool * 3)[(li * 5) % len(pool):][:k], True
+
+
+# --------------------------------------------------------------------------
+# 排版度量 —— 由 measure_metrics.py 从 libass 的渲染结果数像素得来, 不是推算。
+# 注音层要跨图层按格对齐, 第一次需要**绝对**宽度, 才逼出了 §6.28 那个发现:
+#   本文件上面的 GLYPH_W=61.1 其实是**字距**(字形 59.1 + Spacing 2), 名字是错的;
+#   SPACE_ADV=68.6 更是错得离谱, \h 实测只有 15.6。
+# 两者只参与比值, 且主行与下划线层共用同一公式, 所以老代码画出来一直是对的 ——
+# 这里不动它们 (动了断点会突然变宽 3 倍), 只在注音层用下面这组真值。
+# --------------------------------------------------------------------------
+GLYPH_TRUE = 59.1                  # 全角字形前进宽度 @78 (\fsp0 下 20 字实测 1182/20)
+PITCH = GLYPH_TRUE + 2             # 主行每格实际前进 = 61.1 (刚好等于 GLYPH_W)
+H_ADV = 15.6                       # \h 字形前进 @78 (10 个一次量)
+EM_RATIO = GLYPH_TRUE / FONT_SIZE  # Fontsize -> em 比值 0.7577; 全角 = 1 em
+_REF_PX = 200                      # PIL 参考尺寸, 线性缩放以避开整数字号取整误差
+_FONT_FILE = "C:/Windows/Fonts/msyh.ttc"
+_fcache = {}
+
+# 注音占位音节池 (真数据缺位时用, 但**音节个数取真值**)
+_FILL_SYL = ["ka", "ri", "to", "na", "shi", "mu", "e", "yo", "ha", "tsu",
+             "ki", "sa", "no", "ma", "chu", "wa", "i", "ru", "de", "byo"]
+
+
+def adv(text, ass_size):
+    """文本在 ASS Fontsize=ass_size 下的前进宽度 (px), 不含 \\fsp。
+
+    在 _REF_PX 这一档量一次再线性缩放 —— 直接按 int(EM_RATIO*size) 建字体会引入
+    最多 0.5px/字 的取整误差, 一行十几格累积起来就是肉眼可见的错位。
+    """
+    from PIL import ImageFont
+    f = _fcache.get(_REF_PX)
+    if f is None:
+        f = _fcache[_REF_PX] = ImageFont.truetype(_FONT_FILE, _REF_PX)
+    return f.getlength(text) * (EM_RATIO * ass_size / _REF_PX)
+
+
+def ruby_syls(ch, idx):
+    """一个字对应的日文音节。真数据在 soramimi_timed.json 的 ja_syls 里
+    (实测 136/136 全覆盖); 缺位时用占位, 但**音节个数取真值**。"""
+    v = ch.get("ja_syls")
+    if isinstance(v, list) and v and all(isinstance(x, str) for x in v):
+        return list(v)
+    n = ch.get("n_ja_syls") or 1
+    return [_FILL_SYL[(idx * 7 + j * 3) % len(_FILL_SYL)] for j in range(n)]
+
+
+def ruby_row(chars, gaps, size, sep="", cols=None, syls=None):
+    """一行注音的 ASS 文本。逐格前进宽度与主行严格相等。
+
+    cols / syls 是给 layout_variants.py 的选型harness 用的钩子 (逐格换色 / 换成
+    竖线做格宽诊断)。留在这里而不是那边再写一份, 是为了**只有一份排版实现** ——
+    诊断图和成片必须走同一段代码, 不然诊断证明不了成片 (§6.30)。
+
+    和下划线层同一个原理 (§6.16): 两层排版一致 -> 各自居中 -> 必然对齐,
+    全程零绝对坐标。三处不能想当然 (§6.29):
+      · 短音不能拉伸填格 —— 单音节 `a` 拉满一格会变成畸形宽字母。所以每格是
+        [左垫片][原尺寸罗马音][右垫片], 垫片用 U+3000 (恰好 1 em, 这套字体里
+        唯一不必实测就敢信的宽度), 不用 \\h (宽度得靠实测)。
+      · **标点自己占一格**。并进字格会把注音推到字和标点中间, 而且逗号之后的
+        每一格都整体错开一整格。
+      · 留白要按 libass **实际画出来**的宽度复刻 (H_ADV × 取整后的 fscx),
+        不能按 make_ass 想要的 GAP_BREAK 算 —— 那个刻度是错的 (§6.28)。
+    """
+    pad_unit = adv("　", size)                    # = EM_RATIO * size, 恰好 1 em
+    out = []
+
+    def spacer(px):
+        fx = 100 * px / pad_unit
+        return rf"{{\fsp0\fscx{fx:.2f}}}　" if fx >= 0.2 else ""
+
+    for i, c in enumerate(chars):
+        txt = sep.join(syls[i] if syls else ruby_syls(c, i))
+        nat = adv(txt, size) if txt else 0.0
+        c1 = rf"\1c{cols[i]}" if cols else ""      # 跟随头顶那个字的颜色
+        if nat > PITCH and nat > 0:               # 挤不下 -> 压扁, 不溢出
+            out.append(rf"{{\fsp0{c1}\fscx{100 * PITCH / nat:.2f}}}{txt}")
+        else:
+            pad = spacer((PITCH - nat) / 2)
+            out.append(pad + rf"{{\fsp0{c1}\fscx100}}{txt}" + pad)
+        for _ in c["trailing"].strip():           # 标点: 等宽空格占位
+            out.append(spacer(PITCH))
+        if gaps[i] > 0:
+            nn = max(int(round(100 * gaps[i] / SPACE_ADV)), 1)
+            out.append(spacer(H_ADV * nn / 100 + 2))
+    return "".join(out)
+
 
 def cs(t):
     return int(round(t * 100))
@@ -173,7 +333,15 @@ def ts(t):
     return f"{h:d}:{m:02d}:{t % 60:05.2f}"
 
 
-def header(tag):
+def header(tag, layout=None):
+    # 只有启用版式时才多写一条 Ref 样式 —— 不传 --layout 时头部逐字节不变
+    ref = "" if not layout else (
+        f"\nStyle: Ref,{FONT},{REF_SIZE},&H00FFFFFF&,&H00FFFFFF&,&H00201008&,"
+        f"&H80000000&,0,0,0,0,100,100,0,0,1,2.4,1.4,2,60,60,40,1"
+        f"\nStyle: Ruby,{FONT},34,&H00FFFFFF&,&H00FFFFFF&,&H00201008&,"
+        f"&H80000000&,0,0,0,0,100,100,0,0,1,2.0,0,2,60,60,40,1"
+        f"\nStyle: Box,{FONT},40,&H00FFFFFF&,&H00FFFFFF&,&H00000000&,"
+        f"&H00000000&,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1")
     return f"""[Script Info]
 ; 空耳卡拉OK — 打上花火
 ; make_ass.py  滚动扫光(\\kf) + 配色方案: {tag}
@@ -187,7 +355,7 @@ PlayResY: {PLAY_H}
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sora,{FONT},{FONT_SIZE},{C_SUNG},{C_UNSUNG},{C_OUTLINE},&H80000000&,-1,0,0,0,100,100,2,0,1,{OUTLINE},{SHADOW},2,60,60,{MARGIN_V},1
+Style: Sora,{FONT},{FONT_SIZE},{C_SUNG},{C_UNSUNG},{C_OUTLINE},&H80000000&,-1,0,0,0,100,100,2,0,1,{OUTLINE},{SHADOW},2,60,60,{MARGIN_V},1{ref}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -383,10 +551,22 @@ def layout(chars, breaks, colors):
     return gaps, pri, ul
 
 
-def build(lines, plan):
+def build(lines, plan, lay_name=None):
     ev, report = [], []
     stat_raised, stat_min = 0, 99.0
     stat_jump = stat_jump2 = 1.0
+
+    # 版式的边距。**不传 layout 时全部落回原值 (0/0/0 与 MARGIN_V-ULINE_DROP)**,
+    # 输出逐字节不变 —— 这是 --selftest 检查的那条不变量。
+    lay = LAYOUTS[lay_name] if lay_name else {}
+    so = lay.get("sora", {})
+    m_l, m_r = so.get("ml", 0), so.get("mr", 0)
+    m_txt = so.get("mv", 0)                                  # 0 = 用 Style 的值
+    m_uln = so.get("mv", MARGIN_V) - ULINE_DROP
+    # 启用版式时整体抬一层, 给色带腾出 layer 0; 不启用时仍是原来的 0 / 1
+    z_uln, z_txt = (1, 2) if lay else (0, 1)
+    placeholder = False
+
     for k, line in enumerate(lines):
         chars = line["chars"]
         t0, t1 = chars[0]["start"], chars[-1]["end"]
@@ -513,20 +693,88 @@ def build(lines, plan):
                 i = j + 1
             # MarginV 调小 = 整层往下挪, 让线离开字身。用 Dialogue 自己的 MarginV
             # 字段做, 不用 \pos —— \pos 还得给 x, 又回到"自己算坐标"那条死路上。
-            ev.append(f"Dialogue: 0,{ts(t0 - lin)},{ts(t1 + lout)},Sora,,0,0,"
-                      f"{MARGIN_V - ULINE_DROP},,"
+            ev.append(f"Dialogue: {z_uln},{ts(t0 - lin)},{ts(t1 + lout)},Sora,,"
+                      f"{m_l},{m_r},{m_uln},,"
                       rf"{{\fad({fade_in},{fade_out})}}" + "".join(up))
 
-        ev.append(f"Dialogue: 1,{ts(t0 - lin)},{ts(t1 + lout)},Sora,,0,0,0,,{text}")
+        ev.append(f"Dialogue: {z_txt},{ts(t0 - lin)},{ts(t1 + lout)},Sora,,"
+                  f"{m_l},{m_r},{m_txt},,{text}")
+
+        # ---- 版式附加层 (不传 layout 时下面整段都不执行, 输出逐字节不变) ----
+        if lay:
+            a, b = ts(t0 - lin), ts(t1 + lout)
+            fad = rf"{{\fad({fade_in},{fade_out})}}"
+            if lay.get("band"):
+                # 色带只在有词的时候出现 —— 常驻的话全曲七成时间是一条空带子
+                by, bh, bc, ba = lay["band"]
+                ev.append(f"Dialogue: 0,{a},{b},Box,,0,0,0,,"
+                          rf"{fad}{{\p1\an7\pos(0,{by})\1c{bc}\1a{ba}"
+                          rf"\bord0\shad0}}m 0 0 l 1920 0 l 1920 {bh} l 0 {bh}")
+            if lay.get("ruby"):
+                r = lay["ruby"]
+                ev.append(f"Dialogue: 3,{a},{b},Ruby,,{m_l},{m_r},{r['mv']},,"
+                          rf"{fad}{{\fs{r['size']}\1c&HB4E6E6&\1a&H28&}}"
+                          + ruby_row(chars, gaps, r["size"], r["sep"]))
+            n_syl = line.get("n_ja_syls") or len(line.get("ja_syls") or chars)
+            for kind, cfg in lay.get("rows", []):
+                txt_ref, ph = ref_text(kind, line["line"], n_syl)
+                placeholder |= ph
+                ev.append(f"Dialogue: 3,{a},{b},Ref,,{m_l},{m_r},{cfg['mv']},,"
+                          rf"{fad}{{\an{cfg['an']}\fs{cfg['size']}"
+                          rf"\1c{C_REF[kind]}\1a{A_REF[kind]}}}{txt_ref}")
         report.append((line["line"] + 1, t0 - lin, t1 + lout, name, gap_prev, gap_next))
     print(f"  扫光下限 {MIN_WIPE:.2f}s: 抬起 {stat_raised} 个字 "
           f"(原最短 {stat_min:.3f}s —— \\kf{cs(stat_min)} 等于瞬间弹出)")
     print(f"  速度限幅 {WIPE_LIMIT}x: 相邻字扫光速度跳变 "
           f"{stat_jump:.1f}x -> {stat_jump2:.1f}x")
+    if placeholder:
+        # 角标是**故意留在画面上**的 —— 占位文本混进成品发出去才是真事故
+        ev.append(r"Dialogue: 4,0:00:00.00,0:10:00.00,Ref,,0,24,20,,"
+                  r"{\an9\fs26\1c&H8080F0&\1a&H30&}PLACEHOLDER 参考行为占位文本")
+        print("  参考行: 占位 (02_lyrics/ref_ja.txt / ref_zh.txt 未提供) "
+              "—— 画面右上角带 PLACEHOLDER 角标")
+    elif lay:
+        print("  参考行: 使用 ref_ja.txt / ref_zh.txt 的真实文本")
     return ev, report
 
 
+def selftest(lines):
+    """证明"加了版式功能之后, 不传 --layout 的输出没有变"。
+
+    做法不是比对一份存档 (存档会跟着一起改, 证明不了什么), 而是断言两条结构性
+    不变量: 头部不含任何新样式, 且事件层只有原来的 layer 0/1 两层、边距字段全是
+    原值。作者已确认满意的那一版靠这条守住。
+    """
+    ev, _ = build(lines, DEFAULT_PLAN)
+    hdr = header("selftest")
+    bad = []
+    for s in ("Style: Ref", "Style: Ruby", "Style: Box"):
+        if s in hdr:
+            bad.append(f"头部混进了 {s}")
+    for d in ev:
+        f = d.partition(":")[2].split(",", 9)
+        if f[0].strip() not in ("0", "1"):
+            bad.append(f"出现了非 0/1 图层: {f[0].strip()}")
+        if (f[5].strip(), f[6].strip()) != ("0", "0"):
+            bad.append(f"左右边距被改动: {f[5]},{f[6]}")
+        if f[3].strip() != "Sora":
+            bad.append(f"混进了非 Sora 样式: {f[3]}")
+    if bad:
+        for b in sorted(set(bad)):
+            print(f"  FAIL {b}")
+        return 1
+    print(f"  --selftest OK: 无版式时 {len(ev)} 条事件全部为 Sora / layer 0-1 / "
+          f"边距 0,0 —— 与加版式功能之前一致")
+    return 0
+
+
 def main():
+    lay_arg = [a[9:] for a in sys.argv[1:] if a.startswith("--layout=")]
+    layout = lay_arg[0] if lay_arg else None
+    if layout and layout not in LAYOUTS:
+        raise SystemExit(f"ERROR: 未知版式 {layout}\n"
+                         f"可用: {', '.join(LAYOUTS)}  (不传 = 只有空耳, 无对照)")
+
     argv = [a for a in sys.argv[1:] if not a.startswith("--")]
     if argv:
         plan = []
@@ -543,6 +791,11 @@ def main():
     lines = json.loads((LYR / "soramimi_timed.json").read_text(encoding="utf-8"))
     SUBS.mkdir(parents=True, exist_ok=True)
 
+    if "--selftest" in sys.argv[1:]:
+        return selftest(lines)
+
+    if layout:
+        print(f"对照版式: {layout}  {LAYOUTS[layout]['title']}")
     print("配色方案:")
     for lo, hi, nm in plan:
         rng = f"L{lo+1}-L{hi+1}" if hi is not None else f"L{lo+1}-末尾"
@@ -564,10 +817,10 @@ def main():
     print(f"  (断点 {nb} 处 / 着色 {nw} 个 / 下划线 {nu} 个)")
     print()
 
-    ev, report = build(lines, plan)
-    tag = "_".join(nm for _, _, nm in plan)
+    ev, report = build(lines, plan, layout)
+    tag = "_".join(nm for _, _, nm in plan) + (f"_{layout}" if layout else "")
     out = SUBS / f"soramimi_{tag}.ass"
-    out.write_text(header(tag) + "\n".join(ev) + "\n", encoding="utf-8-sig")
+    out.write_text(header(tag, layout) + "\n".join(ev) + "\n", encoding="utf-8-sig")
 
     print(f"{'行':>3} {'显示区间':>16} {'配色':>8}   {'前隔':>7} {'后隔':>7}")
     print("-" * 56)

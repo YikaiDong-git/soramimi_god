@@ -71,15 +71,24 @@ def shift_ass(src: Path, dst: Path, shift_s: float) -> Path:
     return dst
 
 
-def burn(mv: Path, ass: Path, out: Path, trim: float = 0.0):
-    """始终压全片。
+def burn(mv: Path, ass: Path, out: Path, trim: float = 0.0,
+         geom: str = "", limit: float = 0.0):
+    """默认压全片。
 
-    为什么取消了"只压一小段"的预览模式:
+    为什么曾经取消了"只压一小段"的预览模式:
         用 -ss 放在 -i 之前做输入定位时, ffmpeg 会把输出时间戳重置为 0, 而 .ass 里
         写的是绝对时间 -> 字幕整体偏移了裁剪起点。实测: 第 1 行应在 25.72s, 却出现
         在预览的 26.69s 处 (= 绝对 50.4s), 差值正好等于 23.7s 的裁剪起点。
         -copyts / -start_at_zero 能修, 但语义微妙容易再踩; 全片编码在 12x 实时下
         只要 ~25 秒, 直接消掉这一整类 bug。要短片段用 cut_clip() 从成品流拷贝。
+
+    limit > 0 (预览) 为什么是安全的:
+        它用的是 **-t (限制输出时长)**, 不是 -ss —— 起点仍然是 0, 时间戳不重置,
+        所以上面那类偏移根本不会发生。只有"从中间截取"才危险, "只压前 N 秒"不危险。
+        版式选型要一口气压好几个版本, 全片 x5 太浪费。
+
+    geom 是版式的画面几何 (缩放 + 补边), 必须排在 ass 之前 —— 字幕要叠在
+    已经摆好位置的画面上, 顺序反了字幕会跟着一起被缩放。
 
     trim > 0 是唯一的例外 —— 砍掉 UP 主自制片头。这时必须同步把 .ass 前移相同量
     (shift_ass), 两边都从 0 起算才对齐。不能用流拷贝砍片头: 本片关键帧只在
@@ -94,9 +103,11 @@ def burn(mv: Path, ass: Path, out: Path, trim: float = 0.0):
     # "fontsdir=C\\:/Windows/Fonts" 会被解析成 "No option name near '/Windows/Fonts'"。
     # libass 在 Windows 上本来就走系统字体查找, 能直接找到 Microsoft YaHei。
     # 字体找不到时 libass 不报错、静默回退 -> 中文变方块, 所以必须靠抽帧肉眼验。
+    cmd += ["-i", str(mv)]
+    if limit > 0:
+        cmd += ["-t", f"{limit:.2f}"]
     cmd += [
-        "-i", str(mv),
-        "-vf", f"ass={ass.name}",
+        "-vf", f"{geom + ',' if geom else ''}ass={ass.name}",
         "-c:v", "h264_nvenc", "-preset", "p5", "-rc", "vbr", "-cq", "19",
         "-b:v", "0", "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "192k",
@@ -140,9 +151,24 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     which = args[0] if args else "ice_rainbow"
     trim = 0.0
+    layout = None
+    preview = 0.0
     for a in sys.argv[1:]:
         if a.startswith("--trim="):
             trim = float(a.split("=", 1)[1])
+        elif a.startswith("--layout="):
+            layout = a.split("=", 1)[1]
+        elif a == "--preview":
+            preview = 90.0
+        elif a.startswith("--preview="):
+            preview = float(a.split("=", 1)[1])
+
+    from make_ass import LAYOUTS           # 版式定义只有一份, 在 make_ass 里
+    if layout and layout not in LAYOUTS:
+        raise SystemExit(f"ERROR: 未知版式 {layout}\n可用: {', '.join(LAYOUTS)}")
+    geom = LAYOUTS[layout].get("geom", "") if layout else ""
+    if layout:
+        which = f"{which}_{layout}"        # 字幕名和成品名都带上版式, 不会混
 
     OUT.mkdir(parents=True, exist_ok=True)
     mv = find_mv()
@@ -163,18 +189,26 @@ def main():
         suffix = f"{which}_notrailer"
         print(f"片头裁剪: -{trim:.2f}s   字幕已同步前移 -> 第 1 行 {lo-trim:.2f}s")
 
-    # 成品**只写这一个固定路径**。曾经压到 dashanghuahuo_soramimi_<配色>.mp4, 而交付件
+    # 成品路径**由参数唯一决定**。曾经压到 dashanghuahuo_soramimi_<配色>.mp4, 而交付件
     # 叫 FINAL_*, 两者不同名 —— 结果作者看的是上一版的 FINAL, 反馈的全是已经修好的问题,
-    # 白跑一轮。输出唯一化之后, 不存在"哪个文件是最新的"这个问题。
-    out = OUT / "FINAL_dashanghuahuo_full.mp4"
-    if not burn(mv, ass, out, trim=trim):
-        return 1
-    print(f"\n成品: {out.name}  ({out.stat().st_size/1e6:.1f} MB)")
+    # 白跑一轮。规则不是"只许有一个文件", 而是"同一个东西不许有两个名字":
+    # 版式必须进文件名, 否则五个版式互相覆盖, 又会退回同一个坑。
+    lay_tag = f"_{layout}" if layout else ""
+    if preview > 0:
+        out = OUT / f"FINAL_dashanghuahuo{lay_tag}_{int(preview)}s.mp4"
+        if not burn(mv, ass, out, trim=trim, geom=geom, limit=preview):
+            return 1
+        print(f"\n预览 {int(preview)}s: {out.name}  ({out.stat().st_size/1e6:.1f} MB)")
+    else:
+        out = OUT / f"FINAL_dashanghuahuo{lay_tag}_full.mp4"
+        if not burn(mv, ass, out, trim=trim, geom=geom):
+            return 1
+        print(f"\n成品: {out.name}  ({out.stat().st_size/1e6:.1f} MB)")
 
-    # 顺手切好 90s 交付版, 免得漏 (流拷贝, 不重编码)
-    clip = OUT / "FINAL_dashanghuahuo_90s.mp4"
-    if cut_clip(out, clip, 0, 90):
-        print(f"      {clip.name}  ({clip.stat().st_size/1e6:.1f} MB)")
+        # 顺手切好 90s 交付版, 免得漏 (流拷贝, 不重编码)
+        clip = OUT / f"FINAL_dashanghuahuo{lay_tag}_90s.mp4"
+        if cut_clip(out, clip, 0, 90):
+            print(f"      {clip.name}  ({clip.stat().st_size/1e6:.1f} MB)")
 
     # QC 抽帧: 每行中点各一张。裁过片头的话时间要减掉裁剪量
     times = [round(l["start"] + (l["end"] - l["start"]) / 2 - trim, 2) for l in timed]

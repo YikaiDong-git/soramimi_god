@@ -7,3 +7,4 @@ __pycache__/
 *.pyc
 ref_ja.txt
 ref_zh.txt
+*_E3.ass

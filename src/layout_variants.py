@@ -27,14 +27,13 @@
    下划线全部与成品一致。本脚本只改 Dialogue 的 Layer / MarginL / MarginR /
    MarginV 四个字段, 绝不重写文本 —— 重写一遍就等于开了第二份实现, 迟早分叉。
 
-2. 注音层**不算绝对坐标**。和下划线层同一个原理: 逐格前进宽度与主行相等,
-   两层各自居中 -> 必然对齐。短音 (如 "a") 不能拉伸填满格子, 所以每格是
-   [左垫片][原尺寸罗马音][右垫片], 垫片用 \\h + \\fscx 精确到亚像素。
-   (§6.23: 位置偏了先怀疑自己生成的内容, 再怀疑渲染器。)
+2. 注音层的排版**不在本文件里** —— `ruby_row` / `adv` / `ref_text` 全部从
+   make_ass 导入。选型脚本依赖生产脚本, 不能反过来: 一旦各写一份, 分叉之后
+   这里的诊断图就证明不了成片 (§6.30)。
 
-3. libass 的 Fontsize **不等于 em**。实测 Fontsize 78 -> 全角前进 61.1px,
-   比值 0.7833。用 PIL 量罗马音宽度时必须先乘这个比值, 否则每一格都偏。
-   本文件启动时会用 GLYPH_W 反查校验这个比值, 对不上直接报错退出。
+3. libass 的 Fontsize **不等于 em**。渲染实测 Fontsize 78 -> 全角字形前进
+   59.1px, 比值 0.7577 (61.1 是**字距** = 字形 + Spacing 2, §6.28)。
+   本文件启动时用两个独立实测值反查这条度量链, 对不上直接报错退出。
 """
 import io
 import subprocess
@@ -69,12 +68,17 @@ FONT_FILE = "C:/Windows/Fonts/msyh.ttc"
 # 这两处在 make_ass 内部自洽 (主行和下划线层用同一个公式, 所以仍然对齐),
 # 但本脚本要跨层对齐, 必须用真值。
 # --------------------------------------------------------------------------
-GLYPH = 59.1              # 全角字形前进宽度 @78 (\fsp0 下 20 字实测 1182/20)
+# 度量与注音排版**全部取自 make_ass** —— 选型脚本依赖生产脚本, 不能反过来。
+# 两份实现迟早分叉, 而一旦分叉, 这里的诊断图就证明不了成片 (§6.30)。
+GLYPH = M.GLYPH_TRUE      # 全角字形前进宽度 @78
 FSP = 2                   # Style Sora 的 Spacing
-PITCH = GLYPH + FSP       # 主行每格的实际前进 = 61.1 (= make_ass 的 GLYPH_W)
-H_ADV = 15.6              # \h 字形前进 @78 (10 个一次量: 176px/10 - FSP)
-EM = GLYPH / M.FONT_SIZE  # Fontsize -> em 比值 0.7577; 全角 = 1 em
-REF_PX = 200              # PIL 参考测量尺寸, 线性缩放以避开整数字号取整误差
+PITCH = M.PITCH           # 主行每格的实际前进 = 61.1 (= make_ass 的 GLYPH_W)
+H_ADV = M.H_ADV           # \h 字形前进 @78
+EM = M.EM_RATIO           # Fontsize -> em 比值 0.7577; 全角 = 1 em
+adv = M.adv
+ref_text = M.ref_text
+ruby_syls = M.ruby_syls
+ruby_row = M.ruby_row
 
 # 参考行配色
 C_JA = r"&HE8E8E8&"      # 日文原句: 近白
@@ -84,19 +88,6 @@ A_JA = r"&H30&"          # 透明度 (00=不透明, FF=全透)
 A_ZH = r"&H40&"
 A_RUBY = r"&H28&"
 
-_fcache = {}
-
-
-def adv(text, ass_size):
-    """文本在 ASS Fontsize=ass_size 下的前进宽度 (px), 不含 \\fsp。
-
-    在 REF_PX 这一档量一次再线性缩放 —— 直接用 int(EM*size) 建字体会引入
-    最多 0.5px/字 的整数取整, 一行十几格累积起来就是肉眼可见的错位。
-    """
-    f = _fcache.get(REF_PX)
-    if f is None:
-        f = _fcache[REF_PX] = ImageFont.truetype(FONT_FILE, REF_PX)
-    return f.getlength(text) * (EM * ass_size / REF_PX)
 
 
 def _selfcheck():
@@ -114,86 +105,21 @@ def _selfcheck():
 # --------------------------------------------------------------------------
 # 参考行文本
 # --------------------------------------------------------------------------
-# 占位句池: 中性内容, 只为撑出真实长度。真文本填进 ref_ja.txt / ref_zh.txt 即可替换。
-_FILL_JA = "ここに日本語の原詞が入ります対照用の仮の文字列です"
-_FILL_ZH = "此处为中文翻译占位仅用于判断版面长度与留白效果"
-# 占位注音音节池: 常见开音节, 长度 1-3 与真实分布同量级
-_FILL_SYL = ["ka", "ri", "to", "na", "shi", "mu", "e", "yo", "ha", "tsu",
-             "ki", "sa", "no", "ma", "chu", "wa", "i", "ru", "de", "byo"]
 
 
-def ref_text(kind, li, n_syl):
-    """取第 li 行的参考文本。有真文件用真的, 否则按真实长度生成占位。"""
-    path = LYR / ("ref_ja.txt" if kind == "ja" else "ref_zh.txt")
-    if path.exists():
-        rows = [r.strip() for r in path.read_text(encoding="utf-8").splitlines() if r.strip()]
-        if li < len(rows):
-            return rows[li], False
-    pool = _FILL_JA if kind == "ja" else _FILL_ZH
-    # 日文书写形态约为音节数的 0.7 倍字数; 中译约 0.85 倍
-    k = max(int(round(n_syl * (0.70 if kind == "ja" else 0.85))), 4)
-    off = (li * 5) % len(pool)
-    return (pool * 3)[off:off + k], True
 
 
-def ruby_syls(ch, idx):
-    """取一个字的注音音节列表。真数据缺位时用占位, 但**音节个数取真值**。"""
-    v = ch.get("ja_syls")
-    if isinstance(v, list) and v and all(isinstance(x, str) for x in v):
-        n = len(v)
-    else:
-        n = 1
-    return [_FILL_SYL[(idx * 7 + j * 3) % len(_FILL_SYL)] for j in range(n)]
 
 
 # --------------------------------------------------------------------------
 # 注音层 (flow 排版, 零绝对坐标)
 # --------------------------------------------------------------------------
-def ruby_row(chars, gaps, size, sep, real_syls, cols=None):
-    """生成一行注音的 ASS 文本。逐格前进宽度与主行严格相等。
-
-    主行第 i 格的前进宽度:
-        PITCH * (1 + 标点数)  +  留白格(若有)
-    留白格主行写的是 {\\fscxNN}\\h。NN 被 round 成整数, **而且 make_ass 算 NN
-    时用的 SPACE_ADV=68.6 是错的 (真值 15.6)** —— 所以这里不能按"作者想要
-    34px"去算, 必须按 libass 实际画出来的 H_ADV*NN/100 算, 否则每个断点都错半格。
-
-    垫片用 U+3000 而不是 \\h: 全角空格恰好 1 em, 与字号严格成正比, 是这套字体里
-    唯一不必实测就敢信的宽度。
-    """
-    pad_unit = adv("　", size)                    # = EM * size, 恰好 1 em
-    out = []
-
-    def spacer(px):
-        fx = 100 * px / pad_unit
-        return rf"{{\fsp0\fscx{fx:.2f}}}　" if fx >= 0.2 else ""
-
-    for i, c in enumerate(chars):
-        syl = real_syls[i] if real_syls else None
-        txt = sep.join(syl) if syl else ""
-        nat = adv(txt, size) if txt else 0.0
-
-        # 注音只对准**字**这一格。标点自己占一格空的 —— 标点不发音, 把它并进
-        # 字格会让注音整体右移半格, 而且逗号之后的每一格都跟着错开一整格。
-        c1 = rf"\1c{cols[i]}" if cols else ""         # 跟随头顶那个字的颜色
-        if nat > PITCH and nat > 0:                   # 挤不下 -> 压扁, 不溢出
-            out.append(rf"{{\fsp0{c1}\fscx{100 * PITCH / nat:.2f}}}{txt}")
-        else:
-            pad = spacer((PITCH - nat) / 2)
-            out.append(pad + rf"{{\fsp0{c1}\fscx100}}{txt}" + pad)
-
-        for _ in c["trailing"].strip():               # 标点: 等宽空格占位
-            out.append(spacer(PITCH))
-
-        if gaps[i] > 0:                               # 复刻主行留白 (含它的取整)
-            nn = max(int(round(100 * gaps[i] / M.SPACE_ADV)), 1)
-            out.append(spacer(H_ADV * nn / 100 + FSP))
-    return "".join(out)
 
 
 def tick_row(chars, gaps, size):
-    """诊断用: 每格中央一根竖线。线歪了就是格宽算错了, 一眼可见。"""
-    return ruby_row(chars, gaps, size, "", [["|"] for _ in chars])
+    """诊断用: 每格中央一根竖线。走的是**和成片同一段** ruby_row, 所以这张诊断图
+    验的确实是成片的排版, 不是另一份实现的排版。"""
+    return ruby_row(chars, gaps, size, "", syls=[["|"] for _ in chars])
 
 
 # --------------------------------------------------------------------------

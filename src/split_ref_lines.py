@@ -189,7 +189,7 @@ def main():
     lines = json.loads((LYR / "soramimi_timed.json").read_text(encoding="utf-8"))
     want = [L.get("n_ja_syls") or len(L.get("ja_syls") or L["chars"]) for L in lines]
 
-    raw_p = LYR / f"ref_{kind}.raw.txt"
+    raw_p = M.REFD / f"ref_{kind}.raw.txt"
     if not raw_p.exists():
         raise SystemExit(f"ERROR: 缺 {raw_p}\n"
                          f"  把整段{'日文原句' if kind=='ja' else '中文译文'}"
@@ -207,7 +207,7 @@ def main():
         n_ch = sum(s[1] for s in segs)
         ja = M.read_ref("ja")
         # 首选: 日/中两份源逐行对应时, 按**源行**推, 不按字数猜 (见 map_zh_by_line)
-        ja_raw_p = LYR / "ref_ja.raw.txt"
+        ja_raw_p = M.REFD / "ref_ja.raw.txt"
         if ja_raw_p.exists() and len(ja) == len(want):
             src = "\n".join(r for r in ja_raw_p.read_text(encoding="utf-8").splitlines()
                             if not r.lstrip().startswith("#"))
@@ -220,7 +220,7 @@ def main():
         # 关键: 译文源同样是整首歌, 但空耳只覆盖其中一段。目标字数必须按**日文那一段
         # 占日文全文的比例**折算, 不能按整份译文算 —— 否则目标合计 = 全文字数,
         # 等于强迫 DP 把全曲译文塞进 15 行, 窗口选择完全失效 (实际踩过: 选了 96%)。
-        frac, ja_raw = 1.0, LYR / "ref_ja.raw.txt"
+        frac, ja_raw = 1.0, M.REFD / "ref_ja.raw.txt"
         if ja_raw.exists() and len(ja) == len(want):
             src = ja_raw.read_text(encoding="utf-8")
             src = "\n".join(r for r in src.splitlines()
@@ -268,7 +268,7 @@ def main():
     if dry:
         print("\n  --dry: 未写文件")
         return 0
-    out = LYR / f"ref_{kind}.txt"
+    out = M.REFD / f"ref_{kind}.txt"
     out.write_text("\n".join(rows) + "\n", encoding="utf-8")
     print(f"\n  写出 -> {out.name}")
     print("  务必看一眼上表再往下走 —— 切分是按节奏猜的, 语义对不对只有你知道。")

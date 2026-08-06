@@ -292,10 +292,10 @@ def build(embed):
             for s in e["shots"]:
                 tag = s.rsplit("_", 1)[1].split(".")[0]
                 if embed:
-                    src, n = data_uri(QC / s)
+                    src, n = data_uri(QC / "frames" / s)
                     total += n
                 else:
-                    src = s
+                    src = "frames/" + s
                 imgs.append(f'<img src="{src}" alt="{e["key"]} {tag}" '
                             f'data-shot="{tag}"{"" if tag=="L15" else " hidden"}>')
             mx = "".join(f'<div><dt>{html.escape(k)}</dt>'

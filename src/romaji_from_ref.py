@@ -25,6 +25,9 @@ from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
+sys.argv = [sys.argv[0]]                      # make_ass 会读 argv, import 前清空
+import make_ass as M                          # noqa: E402  (路径常量 REFD 在它那里)
+
 ROOT = Path(__file__).resolve().parent.parent
 LYR = ROOT / "02_lyrics"
 
@@ -45,7 +48,7 @@ def load_overrides():
     做法是在转罗马音**之前**把汉字替换成假名: 假名读音无歧义, MeCab 没有猜错的
     余地。替换只作用于罗马音/对齐这条链, ref_ja.txt 里显示用的原句仍是汉字。
     """
-    p = LYR / "reading_overrides.txt"
+    p = M.REFD / "reading_overrides.txt"
     if not p.exists():
         return []
     out = []
@@ -58,9 +61,9 @@ def load_overrides():
 
 
 def main():
-    src = LYR / "ref_ja.raw.txt"
+    src = M.REFD / "ref_ja.raw.txt"
     if not src.exists():
-        src = LYR / "ref_ja.txt"
+        src = M.REFD / "ref_ja.txt"
     if not src.exists():
         raise SystemExit("ERROR: 缺 02_lyrics/ref_ja.raw.txt (或 ref_ja.txt)")
 

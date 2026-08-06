@@ -408,7 +408,10 @@ SHOTS = [("L15", 82.6), ("L03", 37.5)]         # 最长一行(带下划线) / �
 
 
 def render(v, ass_path, mv_path, tag, t):
-    out = OUTD / f"{v['key']}_{tag}.jpg"
+    # 帧一律落 frames/ 子目录 —— 直接堆在 OUTD 下的话, 23 候选 x2 帧 + 汇总图
+    # 会让这个目录逼近百项, 每次重跑还会把手工整理过的结构冲掉。
+    (OUTD / "frames").mkdir(parents=True, exist_ok=True)
+    out = OUTD / "frames" / f"{v['key']}_{tag}.jpg"
     vf = (v["geom"] + ",") if v.get("geom") else ""
     # 诊断帧把画面刷黑再叠字幕: 位置要靠数像素判, 亮背景 (L15 那盏灯) 会让阈值
     # 分割整片连成一块, 竖线根数直接数错。用 drawbox 而不是换成 lavfi 纯色源 ——
@@ -455,10 +458,21 @@ def main():
         print(f"  {v['key']:<4} {v['name'][:44]:<46} {len(shots)}/{len(SHOTS)} 帧")
         made.append((v, shots))
 
-    (OUTD / "index.json").write_text(json.dumps(
-        [dict(key=v["key"], grp=v["grp"], name=v["name"], desc=v["desc"],
-              geom=v.get("geom"), shots=s) for v, s in made],
-        ensure_ascii=False, indent=2), encoding="utf-8")
+    # **合并写, 不覆盖**。只跑子集 (如 `layout_variants.py E3`) 时直接覆盖的话,
+    # index.json 会从 23 条塌成 2 条, 而 frames/ 里 46 张图还在 —— 汇总页于是
+    # 静默地只剩两个候选。局部运行绝不能冒充全量结果 (同 ENGINEERING.md §6.22)。
+    idx_p = OUTD / "index.json"
+    prev = {}
+    if idx_p.exists():
+        prev = {e["key"]: e for e in json.loads(idx_p.read_text(encoding="utf-8"))}
+    for v, s in made:
+        prev[v["key"]] = dict(key=v["key"], grp=v["grp"], name=v["name"],
+                              desc=v["desc"], geom=v.get("geom"), shots=s)
+    order = {v["key"]: i for i, v in enumerate(VARIANTS)}
+    merged = sorted(prev.values(), key=lambda e: order.get(e["key"], 999))
+    idx_p.write_text(json.dumps(merged, ensure_ascii=False, indent=2),
+                     encoding="utf-8")
+    print(f"  index.json: 本次 {len(made)} 条, 合并后共 {len(merged)} 条")
     print(f"\n输出 -> {OUTD}")
     return 0
 

@@ -28,6 +28,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 LYR = ROOT / "02_lyrics"
+# 作者提供的参考文本/读音表单独放 ref/ —— 它们是**原词及其读音**,
+# 与作者原创的空耳标注分开存放, 也便于整目录 gitignore。
+REFD = LYR / "ref"
 SUBS = ROOT / "03_subs"
 
 PLAY_W, PLAY_H = 1920, 1080
@@ -229,7 +232,7 @@ def read_ref(kind):
     结果校验器把注释也数成歌词、报"行数 22 需要 15" —— 两个读者两套规则,
     比没有校验器更糟。凡是"同一份文件多处读", 都该收敛成一个函数。
     """
-    p = LYR / f"ref_{kind}.txt"
+    p = REFD / f"ref_{kind}.txt"
     if not p.exists():
         return []
     return [r.strip() for r in p.read_text(encoding="utf-8").splitlines()

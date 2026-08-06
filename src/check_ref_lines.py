@@ -57,7 +57,7 @@ def main():
 
     hard = 0
     for kind, label in (("ja", "日文原句"), ("zh", "中文翻译")):
-        p = LYR / f"ref_{kind}.txt"
+        p = M.REFD / f"ref_{kind}.txt"
         print(f"\n=== {label}  {p.name} ===")
         if not p.exists():
             print(f"  未提供 —— 当前走占位文本, 成片右上角会有 PLACEHOLDER 角标")

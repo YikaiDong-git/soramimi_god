@@ -334,10 +334,49 @@ def load_ruby(li, chars):
     return out
 
 
+# 音节 = 任意辅音串 + 元音结尾。写得宽一点是**故意的**: 合并促音之后会出现
+# "tto" 这种双辅音开头, 用单辅音的严格正则会把它误判成裸辅音再并一次。
+_CV = re.compile(r"^[a-z]*[aiueo]+$")
+
+
+def _fix_sokuon(rows):
+    """把促音 っ 并进相邻音节 —— 它在对齐流里是个**裸辅音**, 单独摆出来没有意义。
+
+    实测有 4 处 (如 パッと 被切成 pa / t / to)。屏幕上一个孤零零的 "t" 观众读不出
+    任何东西, 而标准赫本式写法是并进下一拍写成 pa / tto。
+      · 后面还有音节 -> 前缀并入 (t + to = tto), 这是常规写法
+      · 已经是整行最后一个 -> 只能并回前一拍 (ka + t = kat)
+    并的是**显示**, 时间轴不动 —— 那一拍的时长仍归它原本的字。
+    """
+    def bad(t):
+        return bool(t) and t != "n" and not _CV.match(t)
+
+    # **单趟处理, 合并结果不再回测**。先前的写法合并完还要重新判定, 而 "tto" 的
+    # 双辅音开头不匹配单辅音正则 -> 又被当成裸辅音并一次 -> 级联出
+    # 'ttohikattesaita' 这种一长串。凡是"改完还要再判一次"的循环都要警惕这一点。
+    out, pend = [], ""
+    for i, r in enumerate(rows):
+        for t in r:
+            t = pend + t
+            pend = ""
+            if bad(t):
+                pend = t                           # 攒着, 并进下一拍
+                continue
+            out.append((i, t))
+    if pend and out:                               # 整行末尾, 只能并回前一拍
+        out[-1] = (out[-1][0], out[-1][1] + pend)
+
+    res = [[] for _ in rows]
+    for i, t in out:
+        res[i].append(t)
+    return res
+
+
 def line_syls(line, chars):
-    """这一行每个字最终显示的注音 —— DTW 的结果, 再套上作者的 R 改派。"""
+    """这一行每个字最终显示的注音 —— DTW 的结果, 促音归并, 再套上作者的 R 改派。"""
+    rows = _fix_sokuon([list(ruby_syls(c, i)) for i, c in enumerate(chars)])
     over = load_ruby(line["line"], chars)
-    return [over.get(i) or ruby_syls(c, i) for i, c in enumerate(chars)]
+    return [over.get(i) or rows[i] for i in range(len(chars))]
 
 
 def ruby_row(chars, gaps, size, sep="", cols=None, syls=None):

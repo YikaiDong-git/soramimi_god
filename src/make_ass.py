@@ -369,6 +369,18 @@ def _fix_sokuon(rows):
     res = [[] for _ in rows]
     for i, t in out:
         res[i].append(t)
+
+    # 合并会**掏空**促音原来那个字 —— 作者反映"有些字根本没贴罗马音"就是这个。
+    # 空格子在屏幕上是个洞, 而且违背一条更根本的原则: **每个空耳字都该有它接的那个音**。
+    # 所以把相邻格子里多出来的那一拍匀过来。优先从右邻借 (促音是往右并的,
+    # 多出来的那一拍通常就在右边)。
+    for i, r in enumerate(res):
+        if r:
+            continue
+        for j in (i + 1, i - 1):
+            if 0 <= j < len(res) and len(res[j]) > 1:
+                res[i].append(res[j].pop(0) if j > i else res[j].pop())
+                break
     return res
 
 
@@ -487,9 +499,19 @@ def _read_spec(li, prefix):
     同一行可以分散写成多条 (审美标注 / 补丁各写各的), 必须**全部合并** ——
     只取第一条会把后面的静默丢掉 (踩过)。
     """
-    f = LYR / "soramimi_groups.txt"
-    if not f.exists():
-        return []
+    # 两个来源合并读:
+    #   soramimi_groups.txt  作者自己的断点/着色/下划线 —— 纯属原创, 随仓库分发
+    #   soramimi_ruby.txt    注音改派 R —— 值是**原词的罗马音**, 按版权边界不入库
+    # 分开放不是洁癖: 混在一份文件里, 一 commit 就把原词读音带进公开仓库了。
+    out = []
+    for f in (LYR / "soramimi_groups.txt", LYR / "soramimi_ruby.txt"):
+        if not f.exists():
+            continue
+        out.extend(_scan_spec(f, li, prefix))
+    return out
+
+
+def _scan_spec(f, li, prefix):
     out = []
     for ln in f.read_text(encoding="utf-8").splitlines():
         ln = ln.strip()

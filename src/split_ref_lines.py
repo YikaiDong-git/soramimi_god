@@ -43,22 +43,66 @@ ZH_PUNCT = "，。、；：！？,;:!?…—"
 
 
 def segments_ja(raw):
-    """把整段日文切成 (原文片段, 拍数, 此处原本是否有换行) 的序列。"""
+    """把整段日文切成 [原文片段, 拍数, 此处原本是否有换行, 源行号] 的序列。
+
+    记源行号是为了给译文用: 译文没有拍数可比, 但如果日/中两份源是**逐行对应**的
+    (行数相同), 就可以把日文这边"第 i 行用了源第几行的多少拍"原样搬给译文,
+    按语义对应而不是按长度猜。
+    """
     import pykakasi
-    out = []
+    out, li = [], 0
     for chunk in raw.split("\n"):
         chunk = chunk.strip()
         if not chunk:
             continue
-        segs = pykakasi.kakasi().convert(chunk)
-        for i, s in enumerate(segs):
+        for s in pykakasi.kakasi().convert(chunk):
             orig = s["orig"]
             if not orig.strip():
                 continue
-            out.append([orig, C.morae(orig), False])
+            out.append([orig, C.morae(orig), False, li])
         if out:
             out[-1][2] = True                          # 这一段末尾原本是换行
+        li += 1
     return out
+
+
+def map_zh_by_line(ja_segs, cuts, zh_lines):
+    """按**源行对应**把译文分成 15 行, 不靠长度猜。
+
+    前提: 日/中两份源逐行对应 (行数相同)。
+    日文那边已经算出"输出第 i 行吃掉了源第 L 行的多少拍", 把这张分配表原样搬到
+    译文: 源第 L 行的译文, 按同样的比例、按顺序分给相应的输出行。
+    于是译文的断句跟着**语义**走, 而不是跟着字数走。
+    """
+    n_out = len(cuts)
+    # contrib[i][L] = 输出第 i 行从源第 L 行拿走的拍数
+    contrib = [{} for _ in range(n_out)]
+    for i, (a, b) in enumerate(cuts):
+        for k in range(a, b):
+            _, m, _, L = ja_segs[k]
+            contrib[i][L] = contrib[i].get(L, 0) + m
+    total_of = {}
+    for c in contrib:
+        for L, m in c.items():
+            total_of[L] = total_of.get(L, 0) + m
+
+    used = {}                                          # 每个源行已经切走多少字
+    rows = []
+    for i in range(n_out):
+        buf = ""
+        for L in sorted(contrib[i]):
+            if L >= len(zh_lines):
+                continue
+            z = zh_lines[L]
+            share = contrib[i][L] / max(total_of[L], 1)
+            take = int(round(len(z) * share))
+            s = used.get(L, 0)
+            # 最后一个吃这一行的输出行, 把剩下的全收走, 避免四舍五入丢字
+            last = max(j for j in range(n_out) if L in contrib[j])
+            buf += z[s:] if i == last else z[s:s + take]
+            used[L] = len(z) if i == last else s + take
+        rows.append(buf.strip())
+    return rows
 
 
 def segments_zh(raw):
@@ -82,11 +126,17 @@ def segments_zh(raw):
 
 
 def best_split(segs, targets):
-    """动态规划: 把 segs 切成 len(targets) 段, 使各段权重和与 target 的偏差最小。
+    """动态规划: 在 segs 里找一个**连续窗口**, 切成 len(targets) 段, 偏差最小。
 
-    dp[i][k] = 前 i 个片段切成 k 段的最小总代价。
+    dp[i][k] = 到第 i 个片段为止、已切出 k 段的最小总代价。
     代价用**相对偏差** |实得-目标| / max(目标,1) —— 短行差 2 拍比长行差 2 拍严重得多,
     用绝对值会让短行被牺牲掉。
+
+    **必须允许跳过前后缀**: 粘进来的往往是整首歌词, 而空耳可能只覆盖其中一段
+    (本片 15 行只到 84 秒, 占全曲 27%)。强行把全部文本分成 15 份, 多出来的拍数
+    会被硬塞进某几行 —— 实际发生过: 源 531 拍 / 目标 149 拍, 结果某一行吃了 355 拍。
+    做法: dp[j][0] 对所有 j 置 0 (前缀可跳过), 终点取所有 dp[i][K] 的最小值
+    (后缀可跳过)。于是它会自己去找对得上的那一段。
     """
     n, K = len(segs), len(targets)
     if n < K:
@@ -99,7 +149,8 @@ def best_split(segs, targets):
     INF = float("inf")
     dp = [[INF] * (K + 1) for _ in range(n + 1)]
     back = [[-1] * (K + 1) for _ in range(n + 1)]
-    dp[0][0] = 0.0
+    for j in range(n + 1):
+        dp[j][0] = 0.0                             # 前缀可整段跳过
     for k in range(1, K + 1):
         tgt = targets[k - 1]
         for i in range(k, n - (K - k) + 1):
@@ -114,16 +165,19 @@ def best_split(segs, targets):
                 if v < dp[i][k]:
                     dp[i][k] = v
                     back[i][k] = j
-    if dp[n][K] == INF:
+    end = min((i for i in range(K, n + 1) if dp[i][K] < INF),
+              key=lambda i: dp[i][K], default=None)      # 后缀可整段跳过
+    if end is None:
         raise SystemExit("ERROR: 找不到可行切法")
 
-    cuts, i = [], n
+    cuts, i = [], end
     for k in range(K, 0, -1):
         j = back[i][k]
         cuts.append((j, i))
         i = j
     cuts.reverse()
-    return ["".join(segs[a][0] for a in range(x, y)) for x, y in cuts]
+    rows = ["".join(segs[a][0] for a in range(x, y)) for x, y in cuts]
+    return rows, cuts
 
 
 def main():
@@ -143,26 +197,61 @@ def main():
     raw = raw_p.read_text(encoding="utf-8")
     raw = "\n".join(r for r in raw.splitlines() if not r.lstrip().startswith("#"))
 
+    zh_by_line = None
     if kind == "ja":
         segs = segments_ja(raw)
         targets = want
         unit = "拍"
     else:
         segs = segments_zh(raw)
+        n_ch = sum(s[1] for s in segs)
         ja = M.read_ref("ja")
+        # 首选: 日/中两份源逐行对应时, 按**源行**推, 不按字数猜 (见 map_zh_by_line)
+        ja_raw_p = LYR / "ref_ja.raw.txt"
+        if ja_raw_p.exists() and len(ja) == len(want):
+            src = "\n".join(r for r in ja_raw_p.read_text(encoding="utf-8").splitlines()
+                            if not r.lstrip().startswith("#"))
+            ja_segs = segments_ja(src)
+            n_ja_lines = (max(s[3] for s in ja_segs) + 1) if ja_segs else 0
+            zh_lines = [r.strip() for r in raw.splitlines() if r.strip()]
+            if n_ja_lines == len(zh_lines) and n_ja_lines > 0:
+                _, ja_cuts = best_split(ja_segs, want)
+                zh_by_line = map_zh_by_line(ja_segs, ja_cuts, zh_lines)
+        # 关键: 译文源同样是整首歌, 但空耳只覆盖其中一段。目标字数必须按**日文那一段
+        # 占日文全文的比例**折算, 不能按整份译文算 —— 否则目标合计 = 全文字数,
+        # 等于强迫 DP 把全曲译文塞进 15 行, 窗口选择完全失效 (实际踩过: 选了 96%)。
+        frac, ja_raw = 1.0, LYR / "ref_ja.raw.txt"
+        if ja_raw.exists() and len(ja) == len(want):
+            src = ja_raw.read_text(encoding="utf-8")
+            src = "\n".join(r for r in src.splitlines()
+                            if not r.lstrip().startswith("#"))
+            src_m = sum(s[1] for s in segments_ja(src))
+            win_m = sum(C.morae(x) for x in ja)
+            if src_m > 0:
+                frac = min(win_m / src_m, 1.0)
+                print(f"  日文只用到源文本的 {100*frac:.0f}%, 译文按同比例折算目标")
+        budget = n_ch * frac
         if len(ja) == len(want):
             tot = sum(len(x) for x in ja)
-            n_ch = sum(s[1] for s in segs)
-            targets = [max(round(n_ch * len(x) / tot), 1) for x in ja]
+            targets = [max(round(budget * len(x) / tot), 1) for x in ja]
         else:
             tot = sum(want)
-            n_ch = sum(s[1] for s in segs)
-            targets = [max(round(n_ch * w / tot), 1) for w in want]
+            targets = [max(round(budget * w / tot), 1) for w in want]
         unit = "字"
 
-    print(f"  片段 {len(segs)} 个, 总{unit}数 {sum(s[1] for s in segs)}, "
-          f"目标 {sum(targets)}")
-    rows = best_split(segs, targets)
+    tot_src = sum(s[1] for s in segs)
+    print(f"  源文本 {len(segs)} 个片段 / {tot_src} {unit}, 目标 {sum(targets)} {unit}")
+    if tot_src > sum(targets) * 1.3:
+        print(f"  源文本比空耳覆盖的范围长 {tot_src/sum(targets):.1f} 倍 —— "
+              f"将自动截取对得上的那一段")
+    rows, cuts = best_split(segs, targets)
+    used = sum(s[1] for s in segs[cuts[0][0]:cuts[-1][1]])
+    print(f"  选中窗口: 第 {cuts[0][0]+1}-{cuts[-1][1]} 个片段 ({used} {unit}, "
+          f"占源文本 {100*used/tot_src:.0f}%)")
+
+    if kind == "zh" and zh_by_line is not None:
+        rows = zh_by_line
+        print("  改用**源行对应**切分 (日/中源行数一致), 不按字数猜")
 
     print(f"\n  {'行':>3} {'目标':>5} {'实得':>5} {'差':>5}   文本")
     print("  " + "-" * 62)

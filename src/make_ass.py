@@ -178,11 +178,15 @@ LAYOUTS = {
               ("ja", dict(an=2, mv=MARGIN_V + 128, size=38))],
     ),
     "B1": dict(
-        title="画面居左 940x529 / 右栏 日文·中译·空耳",
+        # 右栏分成上下两块, 中间留 ~120px: 上块「读意思」(日文原句 + 中译),
+        # 下块「读声音」(注音 + 空耳)。按**读者要干什么**分组, 而不是平均散开 ——
+        # 四行等距排下来会读成一坨, 眼睛不知道哪两行是一伙的。
+        title="画面居左 940x529 / 右栏 上=原文译文 下=注音空耳",
         geom="scale=940:529,pad=1920:1080:0:276:0x0A0A0F",
-        sora=dict(mv=442, ml=968, mr=32),
-        rows=[("ja", dict(an=2, mv=652, size=40)),
-              ("zh", dict(an=2, mv=578, size=40))],
+        sora=dict(mv=376, ml=968, mr=32),
+        ruby=dict(size=34, mv=460, sep=""),      # 与主行差 84, 和 E3 同一组实测值
+        rows=[("ja", dict(an=2, mv=688, size=40)),
+              ("zh", dict(an=2, mv=624, size=40))],
     ),
     "C2": dict(
         title="底部黑带放空耳+中译 / 日文浮在画面顶部",
@@ -278,6 +282,51 @@ def ruby_syls(ch, idx):
         return list(v)
     n = ch.get("n_ja_syls") or 1
     return [_FILL_SYL[(idx * 7 + j * 3) % len(_FILL_SYL)] for j in range(n)]
+
+
+def load_ruby(li, chars):
+    """读注音改派标注 `R05  我吗=ma|da`, 返回 {字下标: [音节, ...]}。
+
+    为什么需要人工改派:
+        音节归到哪个字是 DTW 按**音素距离**算出来的, 它并不知道作者当初是照着
+        哪个音想出那个字的。代价低只说明"这个字听着像这段音", 不代表配对就是
+        作者的本意 —— 两个都说得通的切法, DTW 只会挑代价小的那个。
+        所以这是**标注问题, 不是算法问题**: 和 B/C/U 一样交给作者一句话定死。
+
+    语法 (与 B 的 | 一致):
+        R05  我吗=ma|da        我->ma, 吗->da
+        R03  孤舵=ko+no|da     一个字扛两拍时用 + 连
+    `=` 左边那串用来定位 (与 U/C 同样按显示串 find), 右边按 | 切开逐字对应。
+    """
+    text, slots = _display(chars)
+    s2c = {s: i for i, s in enumerate(slots)}
+    out = {}
+    for spec in _read_spec(li, "R"):
+        word, _, rhs = spec.partition("=")
+        word, rhs = word.strip(), rhs.strip()
+        if not rhs:
+            raise SystemExit(f"ERROR: L{li+1} 注音标注 '{spec}' 缺 = 右边的音节")
+        p = text.find(word)
+        if p < 0:
+            raise SystemExit(f"ERROR: L{li+1} 注音标注的 '{word}' 在歌词里找不到 "
+                             f"(整行: {text})")
+        if p not in s2c:
+            raise SystemExit(f"ERROR: L{li+1} 的 '{word}' 从标点中间起头")
+        groups = [g.strip() for g in rhs.split("|")]
+        i0 = s2c[p]
+        n_char = sum(1 for k in range(len(word)) if p + k in s2c)
+        if len(groups) != n_char:
+            raise SystemExit(f"ERROR: L{li+1} '{word}' 有 {n_char} 个字, "
+                             f"但给了 {len(groups)} 组音节 ({rhs})")
+        for j, g in enumerate(groups):
+            out[i0 + j] = [x for x in g.split("+") if x]
+    return out
+
+
+def line_syls(line, chars):
+    """这一行每个字最终显示的注音 —— DTW 的结果, 再套上作者的 R 改派。"""
+    over = load_ruby(line["line"], chars)
+    return [over.get(i) or ruby_syls(c, i) for i, c in enumerate(chars)]
 
 
 def ruby_row(chars, gaps, size, sep="", cols=None, syls=None):
@@ -714,7 +763,8 @@ def build(lines, plan, lay_name=None):
                 r = lay["ruby"]
                 ev.append(f"Dialogue: 3,{a},{b},Ruby,,{m_l},{m_r},{r['mv']},,"
                           rf"{fad}{{\fs{r['size']}\1c&HB4E6E6&\1a&H28&}}"
-                          + ruby_row(chars, gaps, r["size"], r["sep"]))
+                          + ruby_row(chars, gaps, r["size"], r["sep"],
+                                     syls=line_syls(line, chars)))
             n_syl = line.get("n_ja_syls") or len(line.get("ja_syls") or chars)
             for kind, cfg in lay.get("rows", []):
                 txt_ref, ph = ref_text(kind, line["line"], n_syl)
@@ -768,6 +818,39 @@ def selftest(lines):
     return 0
 
 
+def ruby_report(lines):
+    """把每个字的注音和它的对齐代价列出来, 按代价从高到低排 —— 用来**找**该改派
+    的位置, 而不是靠肉眼一行行扫。
+
+    代价是 DTW 的音素距离: 越高说明"这个字"和"分给它的那段音"越不像, 也就越可能
+    是配错了。但低代价不等于对 —— 两种切法都说得通时 DTW 只会选代价小的那个,
+    未必是作者当初照着想的那个音。所以这张表是线索, 不是判决。
+    """
+    rows = []
+    for line in lines:
+        chars = line["chars"]
+        syls = line_syls(line, chars)
+        over = load_ruby(line["line"], chars)
+        for i, c in enumerate(chars):
+            rows.append((c["cost"], line["line"] + 1, i, c["char"],
+                         "-".join(syls[i]), i in over))
+    rows.sort(reverse=True)
+    n_over = sum(1 for r in rows if r[5])
+    print(f"逐字注音核对 —— 共 {len(rows)} 字, 其中 {n_over} 字已被 R 标注改派\n")
+    print(f"  {'代价':>6}  {'行':>3} {'字':>3}  {'注音':<12} 说明")
+    print("  " + "-" * 52)
+    for cost, ln, i, ch, sy, ov in rows[:24]:
+        note = "已人工改派" if ov else ("**可疑" if cost > 0.45 else "")
+        print(f"  {cost:6.3f}  L{ln:<2} {ch:>3}  {sy:<12} {note}")
+    hi = [r for r in rows if r[0] > 0.45 and not r[5]]
+    print(f"\n  代价 > 0.45 且未改派的: {len(hi)} 字")
+    print("  改派写进 02_lyrics/soramimi_groups.txt, 语法同 B/C/U:")
+    print("      R05  我吗=ma|da        我->ma, 吗->da")
+    print("      R03  孤舵=ko+no|da     一个字扛两拍时用 + 连")
+    print("  改完重跑 make_ass.py --layout=... 即可, 不必重新对齐。")
+    return 0
+
+
 def main():
     lay_arg = [a[9:] for a in sys.argv[1:] if a.startswith("--layout=")]
     layout = lay_arg[0] if lay_arg else None
@@ -793,6 +876,8 @@ def main():
 
     if "--selftest" in sys.argv[1:]:
         return selftest(lines)
+    if "--ruby-report" in sys.argv[1:]:
+        return ruby_report(lines)
 
     if layout:
         print(f"对照版式: {layout}  {LAYOUTS[layout]['title']}")
